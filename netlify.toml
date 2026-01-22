@@ -1,10 +1,10 @@
 [[redirects]]
-  from = "/tttttt/*"
+  from = "/irl-rl/*"
   to = "/index.html"
   status = 200
 
 [[redirects]]
-  from = "/tttttt"
+  from = "/irl-rl"
   to = "/index.html"
   status = 200
 
