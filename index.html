@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const supabase = supabasejs.createClient(
+    const supabaseClient = supabase.createClient(
       'https://oadjrhljwyujlivjpkza.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hZGpyaGxqd3l1amxpdmpwa3phIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkxMDQwMDMsImV4cCI6MjA4NDY4MDAwM30.Cy6zR1A7AGQOBEkf8lD_wB15B6lkywlz3HbB5CvLqts'
     );
@@ -1140,7 +1140,7 @@ async function loadDay(d) {
   const dayData = courseData.days[d];
 
   // 2. Read progress (or create a new row)
-  const { data: rows } = await supabase
+  const { data: rows } = await supabaseClient
     .from('user_progress')
     .select('*')
     .eq('anon_id', anonId)
@@ -1149,7 +1149,7 @@ async function loadDay(d) {
   const row = rows?.[0];
 
   if (!row) {
-    await supabase.from('user_progress').insert({
+    await supabaseClient.from('user_progress').insert({
       anon_id: anonId,
       current_day: d,
       days_completed: [d],
@@ -1157,7 +1157,7 @@ async function loadDay(d) {
   } else {
     const days = row.days_completed || [];
     if (!days.includes(d)) days.push(d);
-    await supabase
+    await supabaseClient
       .from('user_progress')
       .update({
         current_day: d,
