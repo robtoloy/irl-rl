@@ -1085,6 +1085,7 @@ function getAnonId() {
 }
 
 // Replacement for loadDay function with:
+/*
 async function loadDay(d) {
   currentDay = d;
   renderNav();
@@ -1118,6 +1119,51 @@ async function loadDay(d) {
       current_day: d,
       days_completed: days,
     }).eq('id', row.id);
+  }
+
+  // 3. Render the day
+  document.getElementById('content').innerHTML = renderDayFromJSON(dayData);
+  window.scrollTo(0, 0);
+}
+*/
+
+// Replacement for loadDay function with:
+async function loadDay(d) {
+  currentDay = d;
+  renderNav();
+
+  const anonId = getAnonId();
+
+  // 1. Fetch course content from your JSON
+  const response = await fetch('/design-engineering-curriculum.json');
+  const courseData = await response.json();
+  const dayData = courseData.days[d];
+
+  // 2. Read progress (or create a new row)
+  const { data: rows } = await supabase
+    .from('user_progress')
+    .select('*')
+    .eq('anon_id', anonId)
+    .limit(1);
+
+  const row = rows?.[0];
+
+  if (!row) {
+    await supabase.from('user_progress').insert({
+      anon_id: anonId,
+      current_day: d,
+      days_completed: [d],
+    });
+  } else {
+    const days = row.days_completed || [];
+    if (!days.includes(d)) days.push(d);
+    await supabase
+      .from('user_progress')
+      .update({
+        current_day: d,
+        days_completed: days,
+      })
+      .eq('id', row.id);
   }
 
   // 3. Render the day
