@@ -1092,7 +1092,7 @@ async function loadDay(d) {
   const anonId = getAnonId();
 
   // 1. Fetch course content from your JSON
-  const response = await fetch('./design-engineering-curriculum.json');
+  const response = await fetch('/design-engineering-curriculum.json');
   const courseData = await response.json();
   const dayData = courseData.days[d];
 
