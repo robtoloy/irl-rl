@@ -990,11 +990,69 @@ function renderNav() {
   document.getElementById('week4-items').innerHTML = w4;
 }
 
+function renderDayFromJSON(day) {
+  const trackColor = {
+    'vibe-coding': '--cyan',
+    'react': '--purple', 
+    'three-js': '--green',
+    'portfolio': '--orange'
+  }[day.track] || '--cyan';
+  
+  return `
+    <div class="hero" style="min-height: 180px;">
+      <div class="hero-texture"></div>
+      <div class="hero-content">
+        <div class="hero-badge" style="border-color: var(${trackColor})">Day ${day.week} - ${day.track}</div>
+        <h1 class="hero-title">${day.title}</h1>
+        <p class="hero-description">${day.description}</p>
+      </div>
+    </div>
+    
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Objectives</h2>
+      </div>
+      <ul class="objectives-list">
+        ${day.objectives.map(obj => `<li class="objective-item"><span class="objective-bullet">•</span> ${obj}</li>`).join('')}
+      </ul>
+    </section>
+
+    <div class="deliverable">
+      <div class="deliverable-header">
+        <span class="deliverable-icon">🎯</span>
+        <span class="deliverable-title">Today's Deliverable</span>
+      </div>
+      <div class="deliverable-text">${day.deliverable}</div>
+    </div>
+    
+    ${day.resources ? `
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Resources</h2>
+      </div>
+      <div class="resources-grid">
+        ${day.resources.map(r => `
+          <a href="${r.url}" class="resource-link" target="_blank">
+            <span class="resource-icon">📚</span>
+            <div class="resource-info">
+              <div class="resource-title">${r.title}</div>
+              <div class="resource-desc">${r.description}</div>
+            </div>
+            <span class="resource-arrow">→</span>
+          </a>
+        `).join('')}
+      </div>
+    </section>
+    ` : ''}
+  `;
+}
+
+/* original loadDay function
 function loadDay(d) {
   currentDay = d;
   renderNav();
   document.getElementById('sidebar').classList.remove('open');
-  
+
   let content;
   if (d === 0) {
     content = overviewContent();
@@ -1003,10 +1061,30 @@ function loadDay(d) {
   } else {
     content = placeholderContent(d);
   }
-  
+
   document.getElementById('content').innerHTML = content;
   window.scrollTo(0, 0);
+} 
+*/
+// Replacement for loadDay function with:
+async function loadDay(d) {
+  currentDay = d; 
+  renderNav();
+  
+  try {
+    // 1. Load JSON curriculum
+    const response = await fetch('./design-engineering-curriculum.json');
+    const courseData = await response.json();
+    const dayData = courseData.days[d] || {title: `Day ${d} (Coming soon)`, description: 'Content loading...'};
+    
+    // 2. Render day content (your existing UI)
+    document.getElementById('content').innerHTML = renderDayFromJSON(dayData);
+    window.scrollTo(0, 0);
+  } catch(e) {
+    document.getElementById('content').innerHTML = `<div>Content loading... (${e.message})</div>`;
+  }
 }
+
 
 function dayNav(d) {
   const prev = d > 1 ? `<a class="nav-btn" onclick="loadDay(${d-1})">← Day ${d-1}</a>` : '<span></span>';
