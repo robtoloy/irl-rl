@@ -998,81 +998,96 @@ function renderNav() {
 }
 
 function renderDayFromJSON(day) {
+  if (!day) {
+    return `
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Content coming soon</h2>
+        </div>
+        <p class="hero-description">This day is defined in navigation but missing from the curriculum JSON.</p>
+      </section>
+    `;
+  }
+
+  const track = day.track || 'vibe-coding';
   const trackColor = {
-    'vibe-coding': '--cyan',
-    'react': '--purple', 
-    'three-js': '--green',
-    'portfolio': '--orange'
-  }[day.track] || '--cyan';
-  
+    'vibe-coding': 'var(--cyan)',
+    'react': 'var(--purple)',
+    'three-js': 'var(--green)',
+    'design-systems': 'var(--orange)',
+    'portfolio': 'var(--green)'
+  }[track] || 'var(--cyan)';
+
+  const objectives = day.objectives || [];
+  const deliverableText =
+    (day.deliverable && (day.deliverable.description || day.deliverable.title)) ||
+    'Complete today’s exercises.';
+
+  const resources = day.resources || [];
+
   return `
     <div class="hero" style="min-height: 180px;">
       <div class="hero-texture"></div>
       <div class="hero-content">
-        <div class="hero-badge" style="border-color: var(${trackColor})">Day ${day.week} - ${day.track}</div>
-        <h1 class="hero-title">${day.title}</h1>
-        <p class="hero-description">${day.description}</p>
+        <div class="hero-badge" style="border-color:${trackColor}">
+          Day ${day.day || ''} · Week ${day.week || ''}
+        </div>
+        <h1 class="hero-title">${day.title || 'Untitled Day'}</h1>
+        <p class="hero-description">${day.description || ''}</p>
       </div>
     </div>
-    
+
     <section class="section">
       <div class="section-header">
         <h2 class="section-title">Objectives</h2>
       </div>
       <ul class="objectives-list">
-        ${day.objectives.map(obj => `<li class="objective-item"><span class="objective-bullet">•</span> ${obj}</li>`).join('')}
+        ${objectives
+          .map(
+            (o) =>
+              `<li class="objective-item"><span class="objective-bullet">•</span> ${o}</li>`
+          )
+          .join('')}
       </ul>
     </section>
 
-    <div class="deliverable">
-      <div class="deliverable-header">
-        <span class="deliverable-icon">🎯</span>
-        <span class="deliverable-title">Today's Deliverable</span>
+    <section class="section">
+      <div class="deliverable">
+        <div class="deliverable-header">
+          <span class="deliverable-icon">🎯</span>
+          <span class="deliverable-title">Today’s Deliverable</span>
+        </div>
+        <div class="deliverable-text">${deliverableText}</div>
       </div>
-      <div class="deliverable-text">${day.deliverable}</div>
-    </div>
-    
-    ${day.resources ? `
+    </section>
+
+    ${
+      resources.length
+        ? `
     <section class="section">
       <div class="section-header">
         <h2 class="section-title">Resources</h2>
       </div>
       <div class="resources-grid">
-        ${day.resources.map(r => `
-          <a href="${r.url}" class="resource-link" target="_blank">
+        ${resources
+          .map(
+            (r) => `
+          <a class="resource-link" href="${r.url}" target="_blank">
             <span class="resource-icon">📚</span>
             <div class="resource-info">
               <div class="resource-title">${r.title}</div>
-              <div class="resource-desc">${r.description}</div>
+              <div class="resource-desc">${r.description || ''}</div>
             </div>
             <span class="resource-arrow">→</span>
-          </a>
-        `).join('')}
+          </a>`
+          )
+          .join('')}
       </div>
-    </section>
-    ` : ''}
+    </section>`
+        : ''
+    }
   `;
 }
-
-/* original loadDay function
-function loadDay(d) {
-  currentDay = d;
-  renderNav();
-  document.getElementById('sidebar').classList.remove('open');
-
-  let content;
-  if (d === 0) {
-    content = overviewContent();
-  } else if (typeof daysContent[d] === 'function') {
-    content = daysContent[d]();
-  } else {
-    content = placeholderContent(d);
-  }
-
-  document.getElementById('content').innerHTML = content;
-  window.scrollTo(0, 0);
-} 
-*/
 
 // Small auth-less anon ID generator
 function getAnonId() {
@@ -1084,48 +1099,14 @@ function getAnonId() {
   return id;
 }
 
-// Replacement for loadDay function with:
-/*
-async function loadDay(d) {
-  currentDay = d;
-  renderNav();
+let courseData = null;
 
-  const anonId = getAnonId();
-
-  // 1. Fetch course content from your JSON
-  const response = await fetch('/design-engineering-curriculum.json');
-  const courseData = await response.json();
-  const dayData = courseData.days[d];
-
-  // 2. Read progress (or create a new row)
-  const { data: rows } = await supabase
-    .from('user_progress')
-    .select('*')
-    .eq('anon_id', anonId)
-    .limit(1);
-
-  const row = rows?.[0];
-
-  if (!row) {
-    await supabase.from('user_progress').insert({
-      anon_id: anonId,
-      current_day: d,
-      days_completed: [d],
-    });
-  } else {
-    const days = row.days_completed || [];
-    if (!days.includes(d)) days.push(d);
-    await supabase.from('user_progress').update({
-      current_day: d,
-      days_completed: days,
-    }).eq('id', row.id);
-  }
-
-  // 3. Render the day
-  document.getElementById('content').innerHTML = renderDayFromJSON(dayData);
-  window.scrollTo(0, 0);
+async function ensureCourseData() {
+  if (courseData) return courseData;
+  const res = await fetch('/design-engineering-curriculum.json');
+  courseData = await res.json();
+  return courseData;
 }
-*/
 
 // Replacement for loadDay function with:
 async function loadDay(d) {
@@ -1134,10 +1115,10 @@ async function loadDay(d) {
 
   const anonId = getAnonId();
 
-  // 1. Fetch course content from your JSON
-  const response = await fetch('/design-engineering-curriculum.json');
-  const courseData = await response.json();
-  const dayData = courseData.days[d];
+  // 1. Get course data once, reuse it
+  const data = await ensureCourseData();
+  const dayData = data.days[d];
+
 
   // 2. Read progress (or create a new row)
   const { data: rows } = await supabaseClient
