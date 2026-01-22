@@ -1,0 +1,1167 @@
+{
+  "meta": {
+    "title": "Design Engineering Mastery",
+    "subtitle": "28-Day Learning Path",
+    "description": "Master React, Three.js, and modern animation libraries. Build a portfolio that showcases your skills as a design engineer.",
+    "totalDays": 28,
+    "totalWeeks": 4
+  },
+  "weeks": [
+    {
+      "week": 1,
+      "title": "Foundation & Tools",
+      "description": "Set up your development environment with Cursor, Claude Code, and essential tools.",
+      "days": [1, 2, 3, 4, 5, 6, 7]
+    },
+    {
+      "week": 2,
+      "title": "React & Components",
+      "description": "Deep dive into React patterns, hooks, state management, and Framer Motion.",
+      "days": [8, 9, 10, 11, 12, 13, 14]
+    },
+    {
+      "week": 3,
+      "title": "Three.js & Animation",
+      "description": "Build immersive 3D experiences with Three.js, React Three Fiber, and GSAP.",
+      "days": [15, 16, 17, 18, 19, 20, 21]
+    },
+    {
+      "week": 4,
+      "title": "Portfolio Build",
+      "description": "Apply everything to build and deploy a stunning portfolio website.",
+      "days": [22, 23, 24, 25, 26, 27, 28]
+    }
+  ],
+  "days": {
+    "1": {
+      "day": 1,
+      "week": 1,
+      "title": "Development Environment Setup",
+      "description": "Install and configure the essential tools for modern web development.",
+      "duration": "2-3 hours",
+      "track": "vibe-coding",
+      "objectives": [
+        "Install and configure Cursor IDE",
+        "Set up Node.js (v20+) and verify npm",
+        "Install Git and create a GitHub account",
+        "Understand the Cursor interface and AI features",
+        "Install essential VS Code extensions"
+      ],
+      "concepts": {
+        "title": "Your Development Environment",
+        "content": "Your development environment is the foundation of everything you'll build. We're using modern tools optimized for AI-assisted development.",
+        "keyPoints": [
+          { "term": "Cursor", "definition": "VS Code fork with native AI integration" },
+          { "term": "Node.js", "definition": "JavaScript runtime for build tools and servers" },
+          { "term": "Git", "definition": "Version control to track changes and collaborate" },
+          { "term": "npm", "definition": "Package manager for JavaScript libraries" }
+        ]
+      },
+      "osNotes": {
+        "windows": {
+          "title": "Windows Setup Notes",
+          "tips": [
+            "Use Windows Terminal (from Microsoft Store) instead of Command Prompt",
+            "PowerShell is the default shell - some commands differ from Mac/Linux",
+            "PATH issues are common - restart terminal after installations",
+            "Line endings differ (CRLF vs LF) - configure Git accordingly"
+          ]
+        },
+        "mac": {
+          "title": "Mac Setup Notes",
+          "tips": [
+            "Terminal app works well, iTerm2 is a popular upgrade",
+            "Xcode Command Line Tools required - install when prompted",
+            "Homebrew (brew.sh) is the standard package manager",
+            "M1/M2 Macs: All tools are Apple Silicon compatible"
+          ]
+        }
+      },
+      "steps": [
+        {
+          "step": 1,
+          "title": "Install Node.js v20+",
+          "duration": "~10 min",
+          "description": "Node.js is the JavaScript runtime that powers modern web development tools.",
+          "info": {
+            "title": "Why Node.js?",
+            "content": "Node.js runs JavaScript outside the browser. It powers build tools, package managers, and dev servers."
+          },
+          "substeps": {
+            "shared": [
+              "Go to nodejs.org and download LTS version (v20+)"
+            ],
+            "windows": [
+              "Run the .msi installer — ensure 'Add to PATH' is checked",
+              "Close and reopen your terminal after installation"
+            ],
+            "mac": [
+              "Run the .pkg installer with default settings",
+              "Or install via Homebrew: brew install node"
+            ]
+          },
+          "commands": {
+            "windows": "node --version\nnpm --version",
+            "mac": "node --version\nnpm --version"
+          },
+          "successCheck": "You should see version numbers like v20.x.x and 10.x.x",
+          "warnings": {
+            "windows": {
+              "title": "PATH Not Recognized?",
+              "content": "If you see 'node is not recognized', restart your computer or reinstall with 'Add to PATH' checked."
+            }
+          }
+        },
+        {
+          "step": 2,
+          "title": "Install Git & Create GitHub Account",
+          "duration": "~15 min",
+          "description": "Git tracks changes to your code. GitHub hosts your repositories online.",
+          "substeps": {
+            "windows": [
+              "Download Git from git-scm.com",
+              "Run installer with recommended settings",
+              "Select 'Use Visual Studio Code' or 'Use Cursor' as default editor",
+              "Choose 'Git from the command line and also from 3rd-party software'",
+              "Select 'Checkout Windows-style, commit Unix-style' for line endings"
+            ],
+            "mac": [
+              "Run git --version in Terminal",
+              "Install Xcode Command Line Tools when prompted (may take several minutes)"
+            ],
+            "shared": [
+              "Create an account at github.com",
+              "Configure Git with your info"
+            ]
+          },
+          "commands": {
+            "shared": "git config --global user.name \"Your Name\"\ngit config --global user.email \"your@email.com\""
+          },
+          "additionalCommands": {
+            "windows": {
+              "description": "Configure line endings for Windows",
+              "command": "git config --global core.autocrlf true"
+            }
+          },
+          "successCheck": "Run git --version — you should see git version 2.x.x"
+        },
+        {
+          "step": 3,
+          "title": "Install Cursor IDE",
+          "duration": "~10 min",
+          "description": "Cursor is a VS Code fork with built-in AI coding assistance — the primary tool for vibe coding.",
+          "info": {
+            "title": "Why Cursor over VS Code?",
+            "content": "Cursor has native AI integration with Claude and GPT models. You can select code and ask questions, get inline suggestions, and have AI write entire functions."
+          },
+          "substeps": {
+            "shared": [
+              "Go to cursor.sh and download for your OS",
+              "Launch and sign in (free tier available)",
+              "Import VS Code settings if you have them"
+            ],
+            "windows": [
+              "Run the .exe installer"
+            ],
+            "mac": [
+              "Open the .dmg file and drag Cursor to Applications"
+            ]
+          },
+          "warnings": {
+            "mac": {
+              "title": "Gatekeeper Warning?",
+              "content": "If you see 'Cursor can't be opened', go to System Preferences → Security & Privacy → General → Click 'Open Anyway'"
+            }
+          }
+        },
+        {
+          "step": 4,
+          "title": "Install Essential Extensions",
+          "duration": "~10 min",
+          "description": "Extensions add features to Cursor. These are essential for modern web development.",
+          "substeps": {
+            "shared": [
+              "Open Extensions with {{modKey}} + Shift + X",
+              "Search and install each extension"
+            ]
+          },
+          "extensions": [
+            { "name": "ESLint", "description": "JavaScript linting" },
+            { "name": "Prettier", "description": "Code formatting" },
+            { "name": "Tailwind CSS IntelliSense", "description": "Autocomplete for Tailwind" },
+            { "name": "ES7+ React Snippets", "description": "React shortcuts" },
+            { "name": "Auto Rename Tag", "description": "HTML/JSX tag syncing" },
+            { "name": "GitLens", "description": "Enhanced Git features" }
+          ],
+          "shortcuts": [
+            { "action": "Quick file open", "windows": "Ctrl + P", "mac": "Cmd + P" },
+            { "action": "Command palette", "windows": "Ctrl + Shift + P", "mac": "Cmd + Shift + P" },
+            { "action": "Toggle terminal", "windows": "Ctrl + `", "mac": "Cmd + `" },
+            { "action": "Toggle sidebar", "windows": "Ctrl + B", "mac": "Cmd + B" },
+            { "action": "Toggle comment", "windows": "Ctrl + /", "mac": "Cmd + /" }
+          ]
+        },
+        {
+          "step": 5,
+          "title": "Test Cursor AI Features",
+          "duration": "~15 min",
+          "description": "Let's verify Cursor's AI features work and practice using them.",
+          "substeps": {
+            "shared": [
+              "Create a new folder for your projects",
+              "Open this folder in Cursor",
+              "Create a new file called test.js",
+              "Press {{modKey}} + K to open the AI prompt"
+            ]
+          },
+          "commands": {
+            "windows": "mkdir ~\\Projects\\design-engineering\ncd ~\\Projects\\design-engineering\ncursor .",
+            "mac": "mkdir -p ~/Projects/design-engineering\ncd ~/Projects/design-engineering\ncursor ."
+          },
+          "aiPrompt": {
+            "tool": "Cursor",
+            "prompt": "Create a function that takes an array of numbers and returns the sum, average, min, and max values as an object"
+          },
+          "followUp": [
+            "Press Enter and watch Cursor generate the code",
+            "Accept the code with Tab or click Accept",
+            "Try selecting the code and pressing {{modKey}} + L to chat about it"
+          ],
+          "testCommand": "console.log(analyzeNumbers([1, 2, 3, 4, 5]));",
+          "successCheck": "Run node test.js — you should see an object with sum, average, min, and max values"
+        }
+      ],
+      "resources": [
+        {
+          "title": "Node.js Documentation",
+          "url": "https://nodejs.org/docs",
+          "description": "Official docs and guides",
+          "icon": "📗"
+        },
+        {
+          "title": "Cursor Documentation",
+          "url": "https://cursor.sh/docs",
+          "description": "Learn all Cursor features",
+          "icon": "📘"
+        },
+        {
+          "title": "GitHub Getting Started",
+          "url": "https://docs.github.com/en/get-started",
+          "description": "Git and GitHub basics",
+          "icon": "📙"
+        },
+        {
+          "title": "Windows Terminal Docs",
+          "url": "https://learn.microsoft.com/en-us/windows/terminal/",
+          "description": "Improve your terminal experience",
+          "icon": "📔",
+          "os": "windows"
+        }
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "Cursor IDE running with terminal access, Node.js v20+ installed, Git configured, and successful test of Cursor's AI inline editing feature."
+      }
+    },
+    "2": {
+      "day": 2,
+      "week": 1,
+      "title": "Claude Code & AI Tools",
+      "description": "Master the command-line AI assistant for complex coding tasks.",
+      "duration": "2-3 hours",
+      "track": "vibe-coding",
+      "objectives": [
+        "Install Claude Code CLI and authenticate",
+        "Understand when to use Claude Code vs Cursor",
+        "Learn essential Claude Code commands",
+        "Complete your first AI-assisted coding task",
+        "Practice effective prompting techniques"
+      ],
+      "concepts": {
+        "title": "Cursor vs Claude Code",
+        "content": "Top developers use BOTH tools depending on the task complexity.",
+        "keyPoints": [
+          { "term": "Cursor", "definition": "Flow-state coding in the IDE. Quick edits, inline suggestions, real-time assistance." },
+          { "term": "Claude Code", "definition": "Deep reasoning agent. Complex multi-file tasks, refactoring, debugging. Describe a task, walk away, come back to it done." }
+        ]
+      },
+      "osNotes": {
+        "windows": {
+          "title": "Windows Terminal Tips",
+          "tips": [
+            "Use PowerShell or Windows Terminal, not Command Prompt",
+            "May need to run as Administrator for global npm installs",
+            "If script execution is blocked, run: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser"
+          ]
+        },
+        "mac": {
+          "title": "Mac Terminal Tips",
+          "tips": [
+            "Works great in Terminal or iTerm2",
+            "Don't use sudo for npm - fix permissions instead",
+            "zsh is the default shell on modern Macs"
+          ]
+        }
+      },
+      "steps": [
+        {
+          "step": 1,
+          "title": "Install Claude Code CLI",
+          "duration": "~10 min",
+          "description": "Claude Code is a command-line tool for agentic coding. It can edit multiple files, run commands, and reason through complex tasks.",
+          "commands": {
+            "shared": "npm install -g @anthropic-ai/claude-code\nclaude --version"
+          },
+          "warnings": {
+            "windows": {
+              "title": "Permission Error?",
+              "content": "Run your terminal as Administrator (right-click → Run as administrator)"
+            },
+            "mac": {
+              "title": "Permission Error?",
+              "content": "Don't use sudo. Instead, configure npm prefix:\nmkdir ~/.npm-global\nnpm config set prefix '~/.npm-global'\necho 'export PATH=~/.npm-global/bin:$PATH' >> ~/.zshrc\nsource ~/.zshrc"
+            }
+          }
+        },
+        {
+          "step": 2,
+          "title": "Authenticate with Anthropic",
+          "duration": "~5 min",
+          "description": "Claude Code needs to connect to your Anthropic account to work.",
+          "commands": {
+            "shared": "claude auth"
+          },
+          "info": {
+            "title": "Browser Authentication",
+            "content": "This will open a browser window. Sign in with your Anthropic account (or create one at console.anthropic.com)."
+          },
+          "successCheck": "Run 'claude' in your terminal. You should see the Claude Code interface start up."
+        },
+        {
+          "step": 3,
+          "title": "Learn Essential Commands",
+          "duration": "~15 min",
+          "description": "Here are the commands you'll use most often.",
+          "commands": {
+            "shared": "# Start interactive mode in current directory\nclaude\n\n# Run a single task\nclaude \"create a React component for a navbar\"\n\n# Continue a previous conversation\nclaude --continue\n\n# Show help\nclaude --help"
+          },
+          "tips": [
+            "Claude Code sees your entire project structure",
+            "It can create, edit, and delete files",
+            "It can run terminal commands (with your approval)",
+            "Be specific in your prompts for best results"
+          ],
+          "shortcuts": [
+            { "action": "Cancel current action", "key": "Escape" },
+            { "action": "Exit Claude Code", "key": "{{modKey}} + C" },
+            { "action": "Accept suggestion", "key": "Tab" },
+            { "action": "Navigate history", "key": "↑ / ↓" }
+          ]
+        },
+        {
+          "step": 4,
+          "title": "Your First Claude Code Task",
+          "duration": "~20 min",
+          "description": "Let's create a useful utility script using Claude Code.",
+          "commands": {
+            "windows": "mkdir day2-practice\ncd day2-practice\nclaude",
+            "mac": "mkdir day2-practice && cd day2-practice\nclaude"
+          },
+          "aiPrompt": {
+            "tool": "Claude Code",
+            "prompt": "Create a Node.js script called 'file-organizer.js' that scans the current directory, groups files by extension, and prints a summary showing count and total size for each file type category. Include a --move flag that optionally moves files into folders organized by extension."
+          },
+          "followUp": [
+            "Review Claude's plan before approving file creation",
+            "Test the script with: node file-organizer.js"
+          ]
+        },
+        {
+          "step": 5,
+          "title": "Practice Effective Prompting",
+          "duration": "~30 min",
+          "description": "The quality of AI output depends heavily on prompt quality.",
+          "tips": [
+            "Be Specific: Include tech stack, constraints, expected behavior",
+            "Provide Context: Mention existing patterns or requirements",
+            "Request Explanations: Add 'and explain your approach' to learn",
+            "Iterate: Start simple, refine with follow-up prompts"
+          ],
+          "practicePrompts": [
+            {
+              "title": "Practice Prompt 1",
+              "prompt": "Add error handling to the file-organizer script. It should gracefully handle permission errors and missing directories, logging warnings instead of crashing."
+            },
+            {
+              "title": "Practice Prompt 2",
+              "prompt": "Create a README.md for this project that explains what the script does, how to use it, and includes example output."
+            }
+          ]
+        }
+      ],
+      "resources": [
+        {
+          "title": "Claude Code Documentation",
+          "url": "https://docs.anthropic.com/en/docs/claude-code",
+          "description": "Official guide and reference",
+          "icon": "📗"
+        },
+        {
+          "title": "Prompt Engineering Guide",
+          "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering",
+          "description": "Master the art of prompting",
+          "icon": "📘"
+        },
+        {
+          "title": "Fix npm Permissions (Mac)",
+          "url": "https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally",
+          "description": "Avoid using sudo with npm",
+          "icon": "📙",
+          "os": "mac"
+        }
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "Claude Code installed and authenticated. A working file-organizer.js script with README.md, created entirely through natural language prompts."
+      }
+    },
+    "3": {
+      "day": 3,
+      "week": 1,
+      "title": "React Basics Part 1",
+      "description": "Create your first React application and learn the fundamentals.",
+      "duration": "3-4 hours",
+      "track": "react",
+      "objectives": [
+        "Understand what React is and why it's used",
+        "Create a React project using Vite",
+        "Understand components and JSX syntax",
+        "Use useState to make interactive components",
+        "Build a working counter component"
+      ],
+      "concepts": {
+        "title": "What is React?",
+        "content": "React is a JavaScript library for building user interfaces with reusable components.",
+        "keyPoints": [
+          { "term": "Components", "definition": "Building blocks of UI (like LEGO bricks)" },
+          { "term": "JSX", "definition": "HTML-like syntax in JavaScript" },
+          { "term": "State", "definition": "Data that changes over time (triggers re-renders)" },
+          { "term": "Props", "definition": "Data passed from parent to child components" }
+        ]
+      },
+      "steps": [
+        {
+          "step": 1,
+          "title": "Create React Project with Vite",
+          "duration": "~10 min",
+          "description": "Vite is a modern build tool that's faster than Create React App. It's the recommended way to start new React projects.",
+          "commands": {
+            "shared": "npm create vite@latest my-react-app -- --template react\ncd my-react-app\nnpm install\nnpm run dev"
+          },
+          "osNotes": {
+            "windows": "Unlike Mac, Windows won't automatically open the browser. After running npm run dev, manually open the URL shown (usually http://localhost:5173). You can Ctrl+click the URL in terminal."
+          },
+          "successCheck": "Open http://localhost:5173 in your browser. You should see the Vite + React starter page with a spinning logo."
+        },
+        {
+          "step": 2,
+          "title": "Understand the Project Structure",
+          "duration": "~15 min",
+          "description": "Let's explore what Vite created.",
+          "commands": {
+            "shared": "cursor ."
+          },
+          "fileStructure": {
+            "windows": "my-react-app\\\n├── node_modules\\     # Dependencies (don't edit)\n├── public\\           # Static assets\n├── src\\\n│   ├── App.jsx       # Main component ← Start here\n│   ├── App.css       # Styles for App\n│   ├── main.jsx      # Entry point\n│   └── index.css     # Global styles\n├── index.html        # HTML shell\n├── package.json      # Project config\n└── vite.config.js    # Vite config",
+            "mac": "my-react-app/\n├── node_modules/     # Dependencies (don't edit)\n├── public/           # Static assets\n├── src/\n│   ├── App.jsx       # Main component ← Start here\n│   ├── App.css       # Styles for App\n│   ├── main.jsx      # Entry point\n│   └── index.css     # Global styles\n├── index.html        # HTML shell\n├── package.json      # Project config\n└── vite.config.js    # Vite config"
+          },
+          "info": {
+            "title": "Key Files",
+            "content": "App.jsx — Your main component. This is where you'll spend most of your time.\nmain.jsx — Mounts React to the DOM. Rarely needs editing."
+          }
+        },
+        {
+          "step": 3,
+          "title": "Build Your First Component",
+          "duration": "~30 min",
+          "description": "Let's build a simple counter to understand state and events.",
+          "substeps": {
+            "shared": [
+              "Open src/App.jsx and replace all the content"
+            ]
+          },
+          "code": {
+            "filename": "src/App.jsx",
+            "language": "jsx",
+            "content": "import { useState } from 'react'\nimport './App.css'\n\nfunction App() {\n  // useState returns [currentValue, setterFunction]\n  const [count, setCount] = useState(0)\n\n  return (\n    <div className=\"app\">\n      <h1>Counter App</h1>\n      <p>Count: {count}</p>\n      <button onClick={() => setCount(count + 1)}>\n        Increment\n      </button>\n      <button onClick={() => setCount(count - 1)}>\n        Decrement\n      </button>\n      <button onClick={() => setCount(0)}>\n        Reset\n      </button>\n    </div>\n  )\n}\n\nexport default App"
+          },
+          "info": {
+            "title": "Understanding useState",
+            "content": "const [count, setCount] = useState(0)\n• count — The current value (starts at 0)\n• setCount — Function to update the value\n• When you call setCount, React re-renders the component"
+          },
+          "successCheck": "Save the file ({{modKey}} + S) and check your browser—it should update automatically without refreshing!"
+        },
+        {
+          "step": 4,
+          "title": "Create a Reusable Button Component",
+          "duration": "~20 min",
+          "description": "Components become powerful when reusable. Let's extract a Button component.",
+          "commands": {
+            "windows": "mkdir src\\components\nNew-Item src\\components\\Button.jsx",
+            "mac": "mkdir -p src/components\ntouch src/components/Button.jsx"
+          },
+          "code": {
+            "filename": "src/components/Button.jsx",
+            "language": "jsx",
+            "content": "function Button({ children, onClick, variant = 'primary' }) {\n  const styles = {\n    primary: { background: '#3b82f6', color: 'white' },\n    secondary: { background: '#6b7280', color: 'white' },\n    danger: { background: '#ef4444', color: 'white' },\n  }\n\n  return (\n    <button\n      onClick={onClick}\n      style={{\n        ...styles[variant],\n        padding: '0.5rem 1rem',\n        border: 'none',\n        borderRadius: '6px',\n        cursor: 'pointer',\n        margin: '0.25rem',\n        fontSize: '1rem',\n      }}\n    >\n      {children}\n    </button>\n  )\n}\n\nexport default Button"
+          },
+          "followUpCode": {
+            "filename": "src/App.jsx (updated)",
+            "language": "jsx",
+            "content": "import { useState } from 'react'\nimport Button from './components/Button'\nimport './App.css'\n\nfunction App() {\n  const [count, setCount] = useState(0)\n\n  return (\n    <div className=\"app\">\n      <h1>Counter App</h1>\n      <p style={{ fontSize: '3rem', margin: '1rem 0' }}>{count}</p>\n      <div>\n        <Button onClick={() => setCount(count + 1)}>+1</Button>\n        <Button onClick={() => setCount(count - 1)} variant=\"secondary\">-1</Button>\n        <Button onClick={() => setCount(0)} variant=\"danger\">Reset</Button>\n      </div>\n    </div>\n  )\n}\n\nexport default App"
+          }
+        },
+        {
+          "step": 5,
+          "title": "Add Cursor AI Enhancements",
+          "duration": "~20 min",
+          "description": "Use Cursor's AI to extend your counter with more features.",
+          "substeps": {
+            "shared": [
+              "Select all the code in App.jsx",
+              "Press {{modKey}} + K to open inline edit",
+              "Enter the prompt below",
+              "Review the changes and accept with Tab"
+            ]
+          },
+          "aiPrompt": {
+            "tool": "Cursor",
+            "prompt": "Add localStorage persistence so the count survives page refresh. Also add a 'step size' input that lets users increase/decrease by a custom amount instead of just 1."
+          },
+          "successCheck": "Set the counter to 5, refresh the page ({{modKey}} + R in browser) — it should still show 5!",
+          "info": {
+            "title": "Learning by Doing",
+            "content": "Don't just accept AI code blindly! Read through what Cursor generated and try to understand:\n• How does useEffect work for loading saved data?\n• How does the step size input update state?\nAsk Cursor to explain: select code and press {{modKey}} + L to chat about it."
+          }
+        }
+      ],
+      "resources": [
+        {
+          "title": "React Official Tutorial",
+          "url": "https://react.dev/learn",
+          "description": "The best place to learn React",
+          "icon": "📗"
+        },
+        {
+          "title": "Vite Documentation",
+          "url": "https://vitejs.dev/guide/",
+          "description": "Understand your build tool",
+          "icon": "📘"
+        },
+        {
+          "title": "useState Reference",
+          "url": "https://react.dev/reference/react/useState",
+          "description": "Deep dive into React state",
+          "icon": "📙"
+        }
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "A working React counter app with custom Button component, localStorage persistence, and configurable step size — built with AI assistance."
+      }
+    },
+    "4": {
+      "day": 4,
+      "week": 1,
+      "title": "React Basics Part 2",
+      "description": "Master props, conditional rendering, and list rendering.",
+      "duration": "3-4 hours",
+      "track": "react",
+      "objectives": [
+        "Understand props and how data flows in React",
+        "Create multiple components that communicate",
+        "Learn conditional rendering techniques",
+        "Implement list rendering with .map()",
+        "Handle user events beyond onClick"
+      ],
+      "concepts": {
+        "title": "Data Flow in React",
+        "content": "React uses one-way data flow from parent to child components.",
+        "keyPoints": [
+          { "term": "Props", "definition": "Data passed from parent to child components. Read-only." },
+          { "term": "State Lifting", "definition": "Moving state to a common ancestor when siblings need to share data" },
+          { "term": "Callbacks", "definition": "Functions passed as props for child-to-parent communication" }
+        ]
+      },
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "A functional todo list application demonstrating props, conditional rendering, list rendering, and event handling."
+      }
+    },
+    "5": {
+      "day": 5,
+      "week": 1,
+      "title": "Styling with Tailwind CSS",
+      "description": "Learn utility-first CSS for rapid UI development.",
+      "duration": "3-4 hours",
+      "track": "react",
+      "objectives": [
+        "Install and configure Tailwind CSS in a Vite project",
+        "Understand utility-first CSS methodology",
+        "Learn essential Tailwind classes for layout, spacing, colors",
+        "Build responsive designs with Tailwind breakpoints",
+        "Create a styled component library foundation"
+      ],
+      "concepts": {
+        "title": "Utility-First CSS",
+        "content": "Instead of writing custom CSS, you compose designs using pre-built utility classes.",
+        "keyPoints": [
+          { "term": "Utilities", "definition": "Single-purpose classes like p-4, bg-white, rounded-lg" },
+          { "term": "Responsive", "definition": "Breakpoint prefixes like md:, lg: for responsive design" },
+          { "term": "States", "definition": "Variant prefixes like hover:, focus: for interactive states" }
+        ]
+      },
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "All existing components converted to Tailwind CSS with responsive design, hover states, and consistent spacing."
+      }
+    },
+    "6": {
+      "day": 6,
+      "week": 1,
+      "title": "Component Architecture",
+      "description": "Learn advanced patterns for building scalable component systems.",
+      "duration": "3-4 hours",
+      "track": "react",
+      "objectives": [
+        "Understand component composition patterns",
+        "Learn to lift state up for shared data",
+        "Create compound components",
+        "Implement the children pattern effectively",
+        "Build a reusable modal component"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "A component library with Card, Tabs, and Modal compound components demonstrating advanced composition patterns."
+      }
+    },
+    "7": {
+      "day": 7,
+      "week": 1,
+      "title": "Week 1 Review & Mini-Project",
+      "description": "Consolidate learning with a practical dashboard project.",
+      "duration": "4-5 hours",
+      "track": "portfolio",
+      "objectives": [
+        "Consolidate Week 1 learning through practical application",
+        "Build a complete multi-page application",
+        "Practice component architecture decisions",
+        "Implement persistent state with localStorage",
+        "Prepare codebase for Week 2"
+      ],
+      "project": {
+        "title": "Personal Dashboard",
+        "description": "Build a personal dashboard with multiple widgets",
+        "features": [
+          "Header with navigation and theme toggle",
+          "Quick Notes widget (add, edit, delete notes)",
+          "Todo List widget (enhanced from Day 4)",
+          "Weather Widget (mock data for now)",
+          "Bookmarks widget (save favorite links)"
+        ],
+        "requirements": [
+          "All state persisted to localStorage",
+          "Responsive design (mobile-first)",
+          "Consistent component architecture",
+          "At least 3 compound components",
+          "Tailwind CSS styling throughout"
+        ]
+      },
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "A fully functional personal dashboard with 4+ widgets, localStorage persistence, responsive design, and clean component architecture."
+      }
+    },
+    "8": {
+      "day": 8,
+      "week": 2,
+      "title": "State Management",
+      "description": "Master useReducer and Context API for complex state.",
+      "duration": "3-4 hours",
+      "track": "react",
+      "objectives": [
+        "Understand when useState becomes insufficient",
+        "Learn useReducer for complex state logic",
+        "Implement Context API for global state",
+        "Understand state management patterns",
+        "Avoid common state management pitfalls"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "Dashboard refactored with Context API for theme/user preferences and useReducer for complex widgets."
+      }
+    },
+    "9": {
+      "day": 9,
+      "week": 2,
+      "title": "React Hooks Deep Dive",
+      "description": "Master useEffect, useRef, and custom hooks.",
+      "duration": "3-4 hours",
+      "track": "react",
+      "objectives": [
+        "Master useEffect for side effects",
+        "Learn useRef for DOM access and persistent values",
+        "Understand useMemo and useCallback for optimization",
+        "Create custom hooks for reusable logic",
+        "Avoid common hooks pitfalls"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "A custom hooks library with 5+ reusable hooks: useLocalStorage, useDebounce, useFetch, useMediaQuery, useClickOutside."
+      }
+    },
+    "10": {
+      "day": 10,
+      "week": 2,
+      "title": "Forms & User Input",
+      "description": "Build robust forms with validation and error handling.",
+      "duration": "3-4 hours",
+      "track": "react",
+      "objectives": [
+        "Build controlled form components",
+        "Implement form validation (client-side)",
+        "Handle complex form state",
+        "Learn form libraries (React Hook Form)",
+        "Create accessible form components"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "A multi-step registration form with validation, error handling, and accessibility features."
+      }
+    },
+    "11": {
+      "day": 11,
+      "week": 2,
+      "title": "API Integration",
+      "description": "Fetch and manage data from external APIs.",
+      "duration": "3-4 hours",
+      "track": "react",
+      "objectives": [
+        "Fetch data from REST APIs",
+        "Handle loading, error, and success states",
+        "Implement data caching strategies",
+        "Learn React Query basics",
+        "Build a data-fetching custom hook"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "Weather widget updated with real API data, plus a new widget fetching from a public API."
+      }
+    },
+    "12": {
+      "day": 12,
+      "week": 2,
+      "title": "Framer Motion Basics",
+      "description": "Add smooth animations to your React components.",
+      "duration": "3-4 hours",
+      "track": "react",
+      "objectives": [
+        "Install and configure Framer Motion",
+        "Create basic animations (fade, slide, scale)",
+        "Implement enter/exit animations",
+        "Use animation variants",
+        "Build animated components"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "Dashboard widgets with smooth enter/exit animations and micro-interactions."
+      }
+    },
+    "13": {
+      "day": 13,
+      "week": 2,
+      "title": "Advanced Animations",
+      "description": "Create complex animation sequences and gestures.",
+      "duration": "3-4 hours",
+      "track": "react",
+      "objectives": [
+        "Create complex animation sequences",
+        "Implement gesture animations (drag, hover, tap)",
+        "Build scroll-triggered animations",
+        "Use AnimatePresence for list animations",
+        "Create page transitions"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "Interactive dashboard with drag-to-reorder widgets, smooth page transitions, and scroll animations."
+      }
+    },
+    "14": {
+      "day": 14,
+      "week": 2,
+      "title": "Week 2 Review & Component Library",
+      "description": "Document and package reusable components.",
+      "duration": "4-5 hours",
+      "track": "design-systems",
+      "objectives": [
+        "Document and package reusable components",
+        "Create a consistent design system",
+        "Build a component playground/storybook",
+        "Write component documentation",
+        "Prepare components for portfolio use"
+      ],
+      "project": {
+        "title": "Component Library",
+        "description": "Build a documented component library",
+        "components": [
+          "Button (all variants)",
+          "Input (text, password, textarea)",
+          "Select/Dropdown",
+          "Modal",
+          "Card",
+          "Toast/Notification",
+          "Tabs",
+          "Accordion",
+          "Badge/Tag",
+          "Avatar"
+        ]
+      },
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "A complete component library with documentation, ready to use in portfolio project."
+      }
+    },
+    "15": {
+      "day": 15,
+      "week": 3,
+      "title": "Three.js Fundamentals",
+      "description": "Enter the world of 3D graphics on the web.",
+      "duration": "3-4 hours",
+      "track": "three-js",
+      "objectives": [
+        "Understand 3D graphics concepts (scene, camera, renderer)",
+        "Set up Three.js in a web project",
+        "Create basic 3D shapes (geometry + material = mesh)",
+        "Implement camera controls",
+        "Add basic lighting"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "A 3D scene with multiple shapes, lighting, and orbit controls."
+      }
+    },
+    "16": {
+      "day": 16,
+      "week": 3,
+      "title": "3D Scenes & Lighting",
+      "description": "Create realistic 3D environments with advanced lighting.",
+      "duration": "3-4 hours",
+      "track": "three-js",
+      "objectives": [
+        "Master different light types",
+        "Create realistic materials (PBR)",
+        "Load 3D models (GLTF/GLB)",
+        "Implement shadows",
+        "Add environment maps/HDR"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "A scene with loaded 3D model, realistic lighting, and shadows."
+      }
+    },
+    "17": {
+      "day": 17,
+      "week": 3,
+      "title": "React Three Fiber",
+      "description": "Integrate Three.js with React for declarative 3D.",
+      "duration": "3-4 hours",
+      "track": "three-js",
+      "objectives": [
+        "Integrate Three.js with React using R3F",
+        "Use declarative 3D components",
+        "Implement React state with 3D objects",
+        "Learn drei helper library",
+        "Build interactive 3D React components"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "Interactive 3D component that responds to React state changes."
+      }
+    },
+    "18": {
+      "day": 18,
+      "week": 3,
+      "title": "GSAP Animation Basics",
+      "description": "Master the industry-standard animation library.",
+      "duration": "3-4 hours",
+      "track": "three-js",
+      "objectives": [
+        "Install and configure GSAP",
+        "Create tweens (to, from, fromTo)",
+        "Build timelines for sequenced animations",
+        "Use GSAP with React",
+        "Understand easing functions"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "Landing page section with GSAP-powered entrance animations."
+      }
+    },
+    "19": {
+      "day": 19,
+      "week": 3,
+      "title": "GSAP ScrollTrigger",
+      "description": "Create scroll-driven animations and effects.",
+      "duration": "3-4 hours",
+      "track": "three-js",
+      "objectives": [
+        "Install and configure ScrollTrigger plugin",
+        "Create scroll-triggered animations",
+        "Implement parallax effects",
+        "Build scroll-based progress indicators",
+        "Pin elements during scroll"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "A scroll-driven storytelling page with multiple triggered animations."
+      }
+    },
+    "20": {
+      "day": 20,
+      "week": 3,
+      "title": "Combining 3D & Scroll",
+      "description": "Build immersive scroll-controlled 3D experiences.",
+      "duration": "3-4 hours",
+      "track": "three-js",
+      "objectives": [
+        "Sync 3D animations with scroll position",
+        "Create scroll-controlled camera movements",
+        "Implement 3D parallax effects",
+        "Build immersive scroll experiences",
+        "Optimize performance for complex scenes"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "A portfolio-ready hero section with 3D elements that respond to scroll."
+      }
+    },
+    "21": {
+      "day": 21,
+      "week": 3,
+      "title": "Week 3 Review & 3D Component",
+      "description": "Build a showcase 3D component for your portfolio.",
+      "duration": "4-5 hours",
+      "track": "portfolio",
+      "objectives": [
+        "Consolidate Three.js and animation learning",
+        "Build a showcase 3D component",
+        "Optimize for performance",
+        "Ensure accessibility (reduced motion)",
+        "Prepare assets for portfolio"
+      ],
+      "project": {
+        "title": "Interactive 3D Showcase",
+        "description": "Build one showcase piece",
+        "options": [
+          "3D product viewer with rotate/zoom",
+          "Interactive 3D data visualization",
+          "Animated 3D logo/brand element",
+          "Scroll-driven 3D scene"
+        ]
+      },
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "A polished, interactive 3D component ready for portfolio integration."
+      }
+    },
+    "22": {
+      "day": 22,
+      "week": 4,
+      "title": "Portfolio Planning",
+      "description": "Plan your portfolio site structure and content.",
+      "duration": "3-4 hours",
+      "track": "portfolio",
+      "objectives": [
+        "Define portfolio goals and target audience",
+        "Plan information architecture",
+        "Design wireframes and layouts",
+        "Choose tech stack and hosting",
+        "Set up project structure"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "Complete portfolio plan with wireframes, content outline, and project setup."
+      }
+    },
+    "23": {
+      "day": 23,
+      "week": 4,
+      "title": "Hero Section Build",
+      "description": "Create an impactful first impression.",
+      "duration": "4-5 hours",
+      "track": "portfolio",
+      "objectives": [
+        "Build an impactful hero section",
+        "Implement 3D elements from Week 3",
+        "Add scroll-triggered animations",
+        "Create responsive hero layout",
+        "Optimize hero performance"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "Fully animated hero section with 3D elements and smooth scroll transitions."
+      }
+    },
+    "24": {
+      "day": 24,
+      "week": 4,
+      "title": "Projects Showcase",
+      "description": "Display your work with style.",
+      "duration": "4-5 hours",
+      "track": "portfolio",
+      "objectives": [
+        "Design project cards/grids",
+        "Build project detail pages",
+        "Implement filtering/sorting",
+        "Add case study layouts",
+        "Create smooth transitions between views"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "Projects section with grid view, filtering, and detailed case study pages."
+      }
+    },
+    "25": {
+      "day": 25,
+      "week": 4,
+      "title": "About & Contact",
+      "description": "Tell your story and connect with visitors.",
+      "duration": "3-4 hours",
+      "track": "portfolio",
+      "objectives": [
+        "Create engaging about section",
+        "Build skills visualization",
+        "Design contact form",
+        "Implement form submission",
+        "Add social proof elements"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "Complete about and contact sections with working form submission."
+      }
+    },
+    "26": {
+      "day": 26,
+      "week": 4,
+      "title": "Performance & Polish",
+      "description": "Optimize and refine every detail.",
+      "duration": "4-5 hours",
+      "track": "portfolio",
+      "objectives": [
+        "Audit and optimize performance",
+        "Implement lazy loading",
+        "Optimize images and assets",
+        "Add loading states",
+        "Polish animations and transitions"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "Portfolio passing Core Web Vitals with 90+ Lighthouse score."
+      }
+    },
+    "27": {
+      "day": 27,
+      "week": 4,
+      "title": "Deployment & SEO",
+      "description": "Launch your portfolio to the world.",
+      "duration": "3-4 hours",
+      "track": "portfolio",
+      "objectives": [
+        "Configure build for production",
+        "Deploy to Vercel/Netlify",
+        "Set up custom domain",
+        "Implement SEO best practices",
+        "Add analytics"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "Portfolio live on custom domain with complete SEO setup."
+      }
+    },
+    "28": {
+      "day": 28,
+      "week": 4,
+      "title": "Final Review & Launch",
+      "description": "Complete your journey and share your work.",
+      "duration": "3-4 hours",
+      "track": "portfolio",
+      "objectives": [
+        "Final QA and testing",
+        "Cross-browser testing",
+        "Mobile testing",
+        "Gather feedback",
+        "Create launch plan"
+      ],
+      "finalChecklist": [
+        "Test all links",
+        "Test forms",
+        "Test on Chrome, Firefox, Safari",
+        "Test on iOS and Android",
+        "Test all breakpoints",
+        "Check accessibility (keyboard, screen reader)",
+        "Verify analytics tracking",
+        "Backup code to GitHub",
+        "Share with test users",
+        "Prepare social media announcement"
+      ],
+      "launchActivities": [
+        "Final deploy",
+        "Announce on LinkedIn",
+        "Share on Twitter/X",
+        "Update resume with portfolio link",
+        "Submit to portfolio showcases"
+      ],
+      "deliverable": {
+        "title": "Today's Deliverable",
+        "description": "Portfolio launched and shared publicly. 28-day journey complete! 🎉"
+      }
+    }
+  },
+  "tracks": {
+    "vibe-coding": {
+      "name": "Vibe Coding",
+      "color": "#22d3ee",
+      "description": "AI-assisted development tools and workflows"
+    },
+    "react": {
+      "name": "React",
+      "color": "#60a5fa",
+      "description": "React fundamentals and advanced patterns"
+    },
+    "three-js": {
+      "name": "Three.js",
+      "color": "#a78bfa",
+      "description": "3D graphics and animations"
+    },
+    "design-systems": {
+      "name": "Design Systems",
+      "color": "#fb923c",
+      "description": "Component libraries and documentation"
+    },
+    "portfolio": {
+      "name": "Portfolio",
+      "color": "#4ade80",
+      "description": "Portfolio building and deployment"
+    }
+  },
+  "shortcuts": {
+    "modKey": {
+      "windows": "Ctrl",
+      "mac": "Cmd"
+    },
+    "optKey": {
+      "windows": "Alt",
+      "mac": "Option"
+    }
+  }
+}

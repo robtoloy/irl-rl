@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Engineering | Learning Path</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --bg-primary: #0d0d0d;
+  --bg-secondary: #141414;
+  --bg-tertiary: #1a1a1a;
+  --bg-card: #1f1f1f;
+  --bg-card-hover: #262626;
+  --border-primary: #2a2a2a;
+  --border-secondary: #333;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0a0;
+  --text-tertiary: #666;
+  --accent: #fff;
+  --accent-muted: rgba(255,255,255,0.1);
+  --cyan: #22d3ee;
+  --purple: #a78bfa;
+  --green: #4ade80;
+  --orange: #fb923c;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { 
+  font-family: var(--font-sans); 
+  background: var(--bg-primary); 
+  color: var(--text-primary); 
+  line-height: 1.6; 
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Layout */
+.app { display: flex; min-height: 100vh; }
+
+/* Top Navigation Bar */
+.topnav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-primary);
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  z-index: 200;
+}
+
+.topnav-brand {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.topnav-brand span {
+  color: var(--text-tertiary);
+  font-weight: 400;
+  font-size: 0.9rem;
+}
+
+.topnav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: 2rem;
+}
+
+.topnav-link {
+  padding: 0.5rem 1rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+
+.topnav-link:hover {
+  color: var(--text-primary);
+  background: var(--accent-muted);
+}
+
+.topnav-link.active {
+  color: var(--text-primary);
+}
+
+.topnav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* OS Toggle in topnav */
+.os-toggle {
+  display: flex;
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+  padding: 2px;
+  border: 1px solid var(--border-primary);
+}
+
+.os-btn {
+  padding: 0.35rem 0.75rem;
+  border: none;
+  background: transparent;
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+  font-family: var(--font-sans);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.os-btn:hover { color: var(--text-secondary); }
+.os-btn.active { 
+  background: var(--bg-card); 
+  color: var(--text-primary);
+}
+
+.os-btn svg { width: 14px; height: 14px; }
+
+/* Sidebar */
+.sidebar {
+  width: 280px;
+  background: var(--bg-primary);
+  border-right: 1px solid var(--border-primary);
+  position: fixed;
+  top: 60px;
+  left: 0;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+  z-index: 100;
+  padding: 1.5rem 0;
+}
+
+.sidebar::-webkit-scrollbar { width: 6px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border-primary); border-radius: 3px; }
+
+.nav-section { margin-bottom: 1.5rem; }
+
+.nav-section-title {
+  padding: 0.5rem 1.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.nav-group {
+  border: none;
+}
+
+.nav-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1.5rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.nav-group-header:hover {
+  color: var(--text-primary);
+  background: var(--accent-muted);
+}
+
+.nav-group-header.active {
+  color: var(--text-primary);
+}
+
+.nav-chevron {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s;
+  opacity: 0.5;
+}
+
+.nav-group.open .nav-chevron {
+  transform: rotate(180deg);
+}
+
+.nav-group-items {
+  display: none;
+  padding-left: 1rem;
+}
+
+.nav-group.open .nav-group-items {
+  display: block;
+}
+
+.nav-item {
+  display: block;
+  padding: 0.4rem 1.5rem;
+  color: var(--text-tertiary);
+  text-decoration: none;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+}
+
+.nav-item:hover {
+  color: var(--text-secondary);
+  background: var(--accent-muted);
+}
+
+.nav-item.active {
+  color: var(--text-primary);
+  border-left-color: var(--text-primary);
+  background: var(--accent-muted);
+}
+
+/* Main Content */
+.main {
+  flex: 1;
+  margin-left: 280px;
+  margin-top: 60px;
+}
+
+.content {
+  max-width: 900px;
+  padding: 2rem 3rem;
+}
+
+/* Hero Section */
+.hero {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 3rem;
+  background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2rem;
+}
+
+.hero-texture {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.7;
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 1px,
+      rgba(255, 255, 255, 0.03) 1px,
+      rgba(255, 255, 255, 0.03) 2px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(120, 120, 140, 0.08) 3px,
+      rgba(120, 120, 140, 0.08) 4px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 100, 100, 0.05) 0%,
+      rgba(255, 255, 255, 0.08) 25%,
+      rgba(200, 200, 255, 0.05) 50%,
+      rgba(255, 255, 255, 0.08) 75%,
+      rgba(100, 255, 100, 0.05) 100%
+    );
+  background-size: 100% 2px, 100% 4px, 100% 100%;
+  animation: scanlines 8s linear infinite;
+}
+
+.hero-texture::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(ellipse at 20% 20%, rgba(100, 140, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(255, 100, 140, 0.1) 0%, transparent 50%);
+}
+
+.hero-texture::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(13,13,13,0.9) 100%);
+}
+
+@keyframes scanlines {
+  0% { background-position: 0 0, 0 0, 0 0; }
+  100% { background-position: 0 100px, 0 200px, 0 0; }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--accent-muted);
+  backdrop-filter: blur(10px);
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-primary);
+}
+
+.hero-title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.hero-description {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  max-width: 500px;
+  line-height: 1.6;
+}
+
+/* Section Headers */
+.section {
+  margin-bottom: 2.5rem;
+}
+
+.section-header {
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.35rem;
+}
+
+.section-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+}
+
+/* Cards Grid */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-secondary);
+}
+
+.card-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  margin-bottom: 0.75rem;
+}
+
+.card-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.card-description {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+
+/* Objectives List */
+.objectives-list {
+  list-style: none;
+}
+
+.objective-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border-primary);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.objective-item:last-child {
+  border-bottom: none;
+}
+
+.objective-bullet {
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+  margin-top: 0.1rem;
+}
+
+/* Step Accordion */
+.step {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.step-header:hover {
+  background: var(--bg-tertiary);
+}
+
+.step-number {
+  width: 28px;
+  height: 28px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-secondary);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.step.open .step-number {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  border-color: var(--text-primary);
+}
+
+.step-title {
+  flex: 1;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.step-meta {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+}
+
+.step-chevron {
+  width: 18px;
+  height: 18px;
+  color: var(--text-tertiary);
+  transition: transform 0.2s;
+}
+
+.step.open .step-chevron {
+  transform: rotate(180deg);
+}
+
+.step-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.step.open .step-body {
+  max-height: 8000px;
+}
+
+.step-content {
+  padding: 0 1.25rem 1.25rem 3.75rem;
+}
+
+.step-desc {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+/* Code Blocks */
+.code-block {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.code-lang {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.code-copy {
+  background: transparent;
+  border: 1px solid var(--border-secondary);
+  color: var(--text-tertiary);
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  transition: all 0.15s;
+}
+
+.code-copy:hover {
+  background: var(--bg-card);
+  color: var(--text-secondary);
+}
+
+.code-body {
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.code-body pre {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Callouts */
+.callout {
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  border: 1px solid var(--border-primary);
+  background: var(--bg-secondary);
+}
+
+.callout-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.callout-icon {
+  font-size: 1rem;
+}
+
+.callout-title {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.callout-content {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.callout-content p {
+  margin-bottom: 0.5rem;
+}
+
+.callout-content p:last-child {
+  margin-bottom: 0;
+}
+
+.callout-info { border-left: 3px solid var(--cyan); }
+.callout-info .callout-title { color: var(--cyan); }
+
+.callout-tip { border-left: 3px solid var(--green); }
+.callout-tip .callout-title { color: var(--green); }
+
+.callout-warning { border-left: 3px solid var(--orange); }
+.callout-warning .callout-title { color: var(--orange); }
+
+.callout-ai { border-left: 3px solid var(--purple); }
+.callout-ai .callout-title { color: var(--purple); }
+
+.callout-os { border-left: 3px solid var(--orange); }
+.callout-os .callout-title { color: var(--orange); }
+
+/* Substeps */
+.substeps {
+  margin: 1rem 0;
+}
+
+.substep {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.4rem 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.substep-label {
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+/* Keyboard */
+kbd {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-secondary);
+  border-radius: 4px;
+  padding: 0.15rem 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* Resources */
+.resources-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.resource-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all 0.15s;
+}
+
+.resource-link:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--border-secondary);
+}
+
+.resource-icon {
+  font-size: 1.25rem;
+}
+
+.resource-info { flex: 1; }
+
+.resource-title {
+  font-weight: 500;
+  font-size: 0.875rem;
+  margin-bottom: 0.15rem;
+}
+
+.resource-desc {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+.resource-arrow {
+  color: var(--text-tertiary);
+  font-size: 1rem;
+}
+
+/* Deliverable */
+.deliverable {
+  background: linear-gradient(135deg, rgba(34,211,238,0.05), rgba(167,139,250,0.05));
+  border: 1px solid var(--border-secondary);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-top: 2rem;
+}
+
+.deliverable-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.deliverable-icon { font-size: 1rem; }
+
+.deliverable-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.deliverable-text {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+/* Day Navigation */
+.day-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-primary);
+}
+
+.nav-btn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  color: var(--text-secondary);
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+
+.nav-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-secondary);
+}
+
+/* Mobile */
+.menu-btn {
+  display: none;
+  position: fixed;
+  top: 0.75rem;
+  left: 1rem;
+  z-index: 300;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  color: var(--text-primary);
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .topnav { padding-left: 4rem; }
+  .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .menu-btn { display: flex; }
+  .content { padding: 1.5rem; }
+  .hero { min-height: 200px; }
+  .hero-title { font-size: 1.5rem; }
+  .topnav-links { display: none; }
+}
+  </style>
+</head>
+<body class="os-windows">
+  <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+
+  <!-- Top Navigation -->
+  <nav class="topnav">
+    <div class="topnav-brand">
+      Design Engineering <span>Learning Path</span>
+    </div>
+    <div class="topnav-links">
+      <a href="#" class="topnav-link active">Curriculum</a>
+      <a href="#" class="topnav-link">Resources</a>
+      <a href="#" class="topnav-link">Projects</a>
+    </div>
+    <div class="topnav-right">
+      <div class="os-toggle">
+        <button class="os-btn active" id="os-win-btn" onclick="setOS('windows')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5L10.5 4.5V11.5H3V5.5ZM3 18.5V12.5H10.5V19.5L3 18.5ZM11.5 4.35L21 3V11.5H11.5V4.35ZM11.5 12.5H21V21L11.5 19.65V12.5Z"/></svg>
+          Windows
+        </button>
+        <button class="os-btn" id="os-mac-btn" onclick="setOS('mac')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 17 2.94 12.45 4.7 9.39C5.57 7.87 7.13 6.91 8.82 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/></svg>
+          Mac
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="nav-section">
+        <div class="nav-section-title">Get Started</div>
+        <div class="nav-item" onclick="loadDay(0)">Overview</div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">Week 1</div>
+        <div class="nav-group open" data-week="1">
+          <div class="nav-group-header" onclick="toggleNavGroup(this)">
+            Foundation & Tools
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <div class="nav-group-items" id="week1-items"></div>
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">Week 2</div>
+        <div class="nav-group" data-week="2">
+          <div class="nav-group-header" onclick="toggleNavGroup(this)">
+            React & Components
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <div class="nav-group-items" id="week2-items"></div>
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">Week 3</div>
+        <div class="nav-group" data-week="3">
+          <div class="nav-group-header" onclick="toggleNavGroup(this)">
+            Three.js & Animation
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <div class="nav-group-items" id="week3-items"></div>
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">Week 4</div>
+        <div class="nav-group" data-week="4">
+          <div class="nav-group-header" onclick="toggleNavGroup(this)">
+            Portfolio Build
+            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <div class="nav-group-items" id="week4-items"></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div class="content" id="content"></div>
+    </main>
+  </div>
+
+  <script>
+let currentDay = 0;
+let currentOS = 'windows';
+
+const dayTitles = {
+  1: 'Dev Environment Setup',
+  2: 'Claude Code & AI Tools',
+  3: 'React Basics Part 1',
+  4: 'React Basics Part 2',
+  5: 'Styling with Tailwind',
+  6: 'Component Architecture',
+  7: 'Week 1 Review',
+  8: 'State Management',
+  9: 'React Hooks Deep Dive',
+  10: 'Forms & User Input',
+  11: 'API Integration',
+  12: 'Framer Motion Basics',
+  13: 'Advanced Animations',
+  14: 'Component Library',
+  15: 'Three.js Fundamentals',
+  16: '3D Scenes & Lighting',
+  17: 'React Three Fiber',
+  18: 'GSAP Basics',
+  19: 'GSAP ScrollTrigger',
+  20: 'Combining 3D & Scroll',
+  21: 'Week 3 Review',
+  22: 'Portfolio Planning',
+  23: 'Hero Section',
+  24: 'Projects Showcase',
+  25: 'About & Contact',
+  26: 'Performance & Polish',
+  27: 'Deployment & SEO',
+  28: 'Final Review & Launch'
+};
+
+function setOS(os) {
+  currentOS = os;
+  document.body.className = 'os-' + os;
+  document.getElementById('os-win-btn').classList.toggle('active', os === 'windows');
+  document.getElementById('os-mac-btn').classList.toggle('active', os === 'mac');
+  loadDay(currentDay);
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+function toggleNavGroup(el) {
+  el.closest('.nav-group').classList.toggle('open');
+}
+
+function toggleStep(el) {
+  el.closest('.step').classList.toggle('open');
+}
+
+function copyCode(btn) {
+  const code = btn.closest('.code-block').querySelector('pre').textContent;
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+}
+
+function modKey() {
+  return currentOS === 'mac' ? 'Cmd' : 'Ctrl';
+}
+
+function renderNav() {
+  // Week 1
+  let w1 = '';
+  for (let d = 1; d <= 7; d++) {
+    w1 += `<div class="nav-item ${d === currentDay ? 'active' : ''}" onclick="loadDay(${d})">Day ${d}: ${dayTitles[d]}</div>`;
+  }
+  document.getElementById('week1-items').innerHTML = w1;
+
+  // Week 2
+  let w2 = '';
+  for (let d = 8; d <= 14; d++) {
+    w2 += `<div class="nav-item ${d === currentDay ? 'active' : ''}" onclick="loadDay(${d})">Day ${d}: ${dayTitles[d]}</div>`;
+  }
+  document.getElementById('week2-items').innerHTML = w2;
+
+  // Week 3
+  let w3 = '';
+  for (let d = 15; d <= 21; d++) {
+    w3 += `<div class="nav-item ${d === currentDay ? 'active' : ''}" onclick="loadDay(${d})">Day ${d}: ${dayTitles[d]}</div>`;
+  }
+  document.getElementById('week3-items').innerHTML = w3;
+
+  // Week 4
+  let w4 = '';
+  for (let d = 22; d <= 28; d++) {
+    w4 += `<div class="nav-item ${d === currentDay ? 'active' : ''}" onclick="loadDay(${d})">Day ${d}: ${dayTitles[d]}</div>`;
+  }
+  document.getElementById('week4-items').innerHTML = w4;
+}
+
+function loadDay(d) {
+  currentDay = d;
+  renderNav();
+  document.getElementById('sidebar').classList.remove('open');
+  
+  let content;
+  if (d === 0) {
+    content = overviewContent();
+  } else if (typeof daysContent[d] === 'function') {
+    content = daysContent[d]();
+  } else {
+    content = placeholderContent(d);
+  }
+  
+  document.getElementById('content').innerHTML = content;
+  window.scrollTo(0, 0);
+}
+
+function dayNav(d) {
+  const prev = d > 1 ? `<a class="nav-btn" onclick="loadDay(${d-1})">← Day ${d-1}</a>` : '<span></span>';
+  const next = d < 28 ? `<a class="nav-btn" onclick="loadDay(${d+1})">Day ${d+1} →</a>` : '<span></span>';
+  return `<nav class="day-nav">${prev}${next}</nav>`;
+}
+
+function overviewContent() {
+  return `
+    <div class="hero">
+      <div class="hero-texture"></div>
+      <div class="hero-content">
+        <div class="hero-badge">📚 28-Day Learning Path</div>
+        <h1 class="hero-title">Build with Design Engineering</h1>
+        <p class="hero-description">Master React, Three.js, and modern animation libraries. Build a portfolio that showcases your skills as a design engineer.</p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Foundations</h2>
+        <p class="section-subtitle">The building blocks of design engineering.</p>
+      </div>
+      <div class="cards-grid">
+        <div class="card" onclick="loadDay(1)">
+          <div class="card-label">Week 1</div>
+          <div class="card-title">Foundation & Tools</div>
+          <div class="card-description">Set up your development environment with Cursor, Claude Code, and essential tools.</div>
+        </div>
+        <div class="card" onclick="loadDay(8)">
+          <div class="card-label">Week 2</div>
+          <div class="card-title">React & Components</div>
+          <div class="card-description">Deep dive into React patterns, hooks, state management, and Framer Motion.</div>
+        </div>
+        <div class="card" onclick="loadDay(15)">
+          <div class="card-label">Week 3</div>
+          <div class="card-title">Three.js & Animation</div>
+          <div class="card-description">Build immersive 3D experiences with Three.js, React Three Fiber, and GSAP.</div>
+        </div>
+        <div class="card" onclick="loadDay(22)">
+          <div class="card-label">Week 4</div>
+          <div class="card-title">Portfolio Build</div>
+          <div class="card-description">Apply everything to build and deploy a stunning portfolio website.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Quick Start</h2>
+        <p class="section-subtitle">Jump into Day 1 to begin your journey.</p>
+      </div>
+      <div class="cards-grid">
+        <div class="card" onclick="loadDay(1)">
+          <div class="card-label">Day 1</div>
+          <div class="card-title">Dev Environment Setup</div>
+          <div class="card-description">Install Node.js, Git, and Cursor IDE. Test AI-assisted coding features.</div>
+        </div>
+        <div class="card" onclick="loadDay(2)">
+          <div class="card-label">Day 2</div>
+          <div class="card-title">Claude Code & AI Tools</div>
+          <div class="card-description">Master Claude Code CLI for complex multi-file coding tasks.</div>
+        </div>
+        <div class="card" onclick="loadDay(3)">
+          <div class="card-label">Day 3</div>
+          <div class="card-title">React Basics</div>
+          <div class="card-description">Create your first React app with Vite. Learn components and state.</div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function placeholderContent(d) {
+  const week = Math.ceil(d / 7);
+  return `
+    <div class="hero" style="min-height: 180px;">
+      <div class="hero-texture"></div>
+      <div class="hero-content">
+        <div class="hero-badge">Day ${d} · Week ${week}</div>
+        <h1 class="hero-title">${dayTitles[d]}</h1>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Learning Objectives</h2>
+      </div>
+      <ul class="objectives-list">
+        <li class="objective-item"><span class="objective-bullet">→</span> Content coming soon for Day ${d}</li>
+      </ul>
+    </section>
+
+    <div class="callout callout-info">
+      <div class="callout-header">
+        <span class="callout-icon">📝</span>
+        <span class="callout-title">Content In Development</span>
+      </div>
+      <div class="callout-content">
+        <p>Detailed instructions for this day are being prepared.</p>
+      </div>
+    </div>
+
+    ${dayNav(d)}
+  `;
+}
+
+// ==================== DAY CONTENT ====================
+const daysContent = {
+  1: function() {
+    const isWin = currentOS === 'windows';
+    return `
+    <div class="hero" style="min-height: 180px;">
+      <div class="hero-texture"></div>
+      <div class="hero-content">
+        <div class="hero-badge">Day 1 · Week 1</div>
+        <h1 class="hero-title">Development Environment Setup</h1>
+        <p class="hero-description">Install and configure the essential tools for modern web development.</p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Learning Objectives</h2>
+      </div>
+      <ul class="objectives-list">
+        <li class="objective-item"><span class="objective-bullet">→</span> Install and configure Cursor IDE</li>
+        <li class="objective-item"><span class="objective-bullet">→</span> Set up Node.js (v20+) and verify npm</li>
+        <li class="objective-item"><span class="objective-bullet">→</span> Install Git and create a GitHub account</li>
+        <li class="objective-item"><span class="objective-bullet">→</span> Understand the Cursor interface and AI features</li>
+        <li class="objective-item"><span class="objective-bullet">→</span> Install essential VS Code extensions</li>
+      </ul>
+    </section>
+
+    ${isWin ? `
+    <div class="callout callout-os">
+      <div class="callout-header">
+        <span class="callout-icon">🪟</span>
+        <span class="callout-title">Windows Setup Notes</span>
+      </div>
+      <div class="callout-content">
+        <p><strong>Windows Terminal:</strong> Install from Microsoft Store for a better terminal experience.</p>
+        <p><strong>PATH Issues:</strong> Restart your terminal after installations for PATH changes to take effect.</p>
+        <p><strong>PowerShell:</strong> Use PowerShell (not Command Prompt) for all commands in this course.</p>
+      </div>
+    </div>
+    ` : `
+    <div class="callout callout-os">
+      <div class="callout-header">
+        <span class="callout-icon">🍎</span>
+        <span class="callout-title">Mac Setup Notes</span>
+      </div>
+      <div class="callout-content">
+        <p><strong>Xcode Tools:</strong> You'll be prompted to install these when running Git — click Install.</p>
+        <p><strong>Homebrew:</strong> Consider installing brew.sh for easier package management.</p>
+        <p><strong>M1/M2:</strong> All tools are Apple Silicon compatible.</p>
+      </div>
+    </div>
+    `}
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Step-by-Step Instructions</h2>
+      </div>
+
+      <div class="step open">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-number">1</span>
+          <span class="step-title">Install Node.js v20+</span>
+          <span class="step-meta">~10 min</span>
+          <svg class="step-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="step-body">
+          <div class="step-content">
+            <p class="step-desc">Node.js is the JavaScript runtime that powers modern web development tools.</p>
+            
+            <div class="callout callout-info">
+              <div class="callout-header">
+                <span class="callout-icon">💡</span>
+                <span class="callout-title">Why Node.js?</span>
+              </div>
+              <div class="callout-content">
+                <p>Node.js runs JavaScript outside the browser. It powers build tools, package managers, and dev servers.</p>
+              </div>
+            </div>
+
+            <div class="substeps">
+              <div class="substep"><span class="substep-label">a.</span> Go to nodejs.org and download LTS version (v20+)</div>
+              ${isWin ? `
+              <div class="substep"><span class="substep-label">b.</span> Run the .msi installer — ensure "Add to PATH" is checked</div>
+              <div class="substep"><span class="substep-label">c.</span> Close and reopen your terminal</div>
+              ` : `
+              <div class="substep"><span class="substep-label">b.</span> Run the .pkg installer with default settings</div>
+              <div class="substep"><span class="substep-label">c.</span> Or install via Homebrew: brew install node</div>
+              `}
+              <div class="substep"><span class="substep-label">d.</span> Verify installation:</div>
+            </div>
+
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-lang">${isWin ? 'powershell' : 'bash'}</span>
+                <button class="code-copy" onclick="copyCode(this)">Copy</button>
+              </div>
+              <div class="code-body">
+                <pre>node --version
+npm --version</pre>
+              </div>
+            </div>
+
+            <div class="callout callout-tip">
+              <div class="callout-header">
+                <span class="callout-icon">✓</span>
+                <span class="callout-title">Success Check</span>
+              </div>
+              <div class="callout-content">
+                <p>You should see version numbers like v20.x.x and 10.x.x</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-number">2</span>
+          <span class="step-title">Install Git & Create GitHub Account</span>
+          <span class="step-meta">~15 min</span>
+          <svg class="step-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="step-body">
+          <div class="step-content">
+            <p class="step-desc">Git tracks changes to your code. GitHub hosts your repositories online.</p>
+
+            <div class="substeps">
+              ${isWin ? `
+              <div class="substep"><span class="substep-label">a.</span> Download Git from git-scm.com</div>
+              <div class="substep"><span class="substep-label">b.</span> Run installer with recommended settings</div>
+              ` : `
+              <div class="substep"><span class="substep-label">a.</span> Run git --version in Terminal</div>
+              <div class="substep"><span class="substep-label">b.</span> Install Xcode Command Line Tools when prompted</div>
+              `}
+              <div class="substep"><span class="substep-label">c.</span> Create an account at github.com</div>
+              <div class="substep"><span class="substep-label">d.</span> Configure Git:</div>
+            </div>
+
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-lang">${isWin ? 'powershell' : 'bash'}</span>
+                <button class="code-copy" onclick="copyCode(this)">Copy</button>
+              </div>
+              <div class="code-body">
+                <pre>git config --global user.name "Your Name"
+git config --global user.email "your@email.com"</pre>
+              </div>
+            </div>
+
+            ${isWin ? `
+            <div class="callout callout-warning">
+              <div class="callout-header">
+                <span class="callout-icon">⚠️</span>
+                <span class="callout-title">Windows Line Endings</span>
+              </div>
+              <div class="callout-content">
+                <p>Run this to avoid issues when collaborating:</p>
+                <p><kbd>git config --global core.autocrlf true</kbd></p>
+              </div>
+            </div>
+            ` : ''}
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-number">3</span>
+          <span class="step-title">Install Cursor IDE</span>
+          <span class="step-meta">~10 min</span>
+          <svg class="step-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="step-body">
+          <div class="step-content">
+            <p class="step-desc">Cursor is a VS Code fork with built-in AI coding assistance — the primary tool for vibe coding.</p>
+
+            <div class="substeps">
+              <div class="substep"><span class="substep-label">a.</span> Go to cursor.sh and download for ${isWin ? 'Windows' : 'Mac'}</div>
+              <div class="substep"><span class="substep-label">b.</span> Run the ${isWin ? '.exe' : '.dmg'} installer</div>
+              <div class="substep"><span class="substep-label">c.</span> Launch and sign in (free tier available)</div>
+              <div class="substep"><span class="substep-label">d.</span> Import VS Code settings if you have them</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-number">4</span>
+          <span class="step-title">Install Essential Extensions</span>
+          <span class="step-meta">~10 min</span>
+          <svg class="step-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="step-body">
+          <div class="step-content">
+            <p class="step-desc">Extensions add features to Cursor. Open Extensions with <kbd>${modKey()} + Shift + X</kbd></p>
+
+            <div class="substeps">
+              <div class="substep"><span class="substep-label">•</span> <strong>ESLint</strong> — JavaScript linting</div>
+              <div class="substep"><span class="substep-label">•</span> <strong>Prettier</strong> — Code formatting</div>
+              <div class="substep"><span class="substep-label">•</span> <strong>Tailwind CSS IntelliSense</strong> — Autocomplete</div>
+              <div class="substep"><span class="substep-label">•</span> <strong>ES7+ React Snippets</strong> — React shortcuts</div>
+              <div class="substep"><span class="substep-label">•</span> <strong>GitLens</strong> — Enhanced Git features</div>
+            </div>
+
+            <div class="callout callout-info">
+              <div class="callout-header">
+                <span class="callout-icon">⌨️</span>
+                <span class="callout-title">Essential Shortcuts</span>
+              </div>
+              <div class="callout-content">
+                <p><kbd>${modKey()} + P</kbd> — Quick file open</p>
+                <p><kbd>${modKey()} + Shift + P</kbd> — Command palette</p>
+                <p><kbd>${modKey()} + \`</kbd> — Toggle terminal</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-number">5</span>
+          <span class="step-title">Test Cursor AI Features</span>
+          <span class="step-meta">~15 min</span>
+          <svg class="step-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="step-body">
+          <div class="step-content">
+            <p class="step-desc">Let's verify Cursor's AI features work.</p>
+
+            <div class="substeps">
+              <div class="substep"><span class="substep-label">a.</span> Create a new file called test.js</div>
+              <div class="substep"><span class="substep-label">b.</span> Press <kbd>${modKey()} + K</kbd> to open AI prompt</div>
+              <div class="substep"><span class="substep-label">c.</span> Enter this prompt:</div>
+            </div>
+
+            <div class="callout callout-ai">
+              <div class="callout-header">
+                <span class="callout-icon">🤖</span>
+                <span class="callout-title">Cursor AI Prompt</span>
+              </div>
+              <div class="callout-content">
+                <p>"Create a function that takes an array of numbers and returns the sum, average, min, and max values as an object"</p>
+              </div>
+            </div>
+
+            <div class="substeps">
+              <div class="substep"><span class="substep-label">d.</span> Accept with <kbd>Tab</kbd></div>
+              <div class="substep"><span class="substep-label">e.</span> Test with <kbd>node test.js</kbd></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Resources</h2>
+      </div>
+      <div class="resources-grid">
+        <a class="resource-link" href="https://nodejs.org/docs" target="_blank">
+          <span class="resource-icon">📗</span>
+          <div class="resource-info">
+            <div class="resource-title">Node.js Documentation</div>
+            <div class="resource-desc">Official docs and guides</div>
+          </div>
+          <span class="resource-arrow">→</span>
+        </a>
+        <a class="resource-link" href="https://cursor.sh/docs" target="_blank">
+          <span class="resource-icon">📘</span>
+          <div class="resource-info">
+            <div class="resource-title">Cursor Documentation</div>
+            <div class="resource-desc">Learn all Cursor features</div>
+          </div>
+          <span class="resource-arrow">→</span>
+        </a>
+        <a class="resource-link" href="https://docs.github.com/en/get-started" target="_blank">
+          <span class="resource-icon">📙</span>
+          <div class="resource-info">
+            <div class="resource-title">GitHub Getting Started</div>
+            <div class="resource-desc">Git and GitHub basics</div>
+          </div>
+          <span class="resource-arrow">→</span>
+        </a>
+      </div>
+    </section>
+
+    <div class="deliverable">
+      <div class="deliverable-header">
+        <span class="deliverable-icon">🎯</span>
+        <span class="deliverable-title">Today's Deliverable</span>
+      </div>
+      <div class="deliverable-text">Cursor IDE running with terminal access, Node.js v20+ installed, Git configured, and successful test of Cursor's AI inline editing feature.</div>
+    </div>
+
+    ${dayNav(1)}
+  `;
+  },
+
+  2: function() {
+    const isWin = currentOS === 'windows';
+    return `
+    <div class="hero" style="min-height: 180px;">
+      <div class="hero-texture"></div>
+      <div class="hero-content">
+        <div class="hero-badge">Day 2 · Week 1</div>
+        <h1 class="hero-title">Claude Code & AI Tools</h1>
+        <p class="hero-description">Master the command-line AI assistant for complex coding tasks.</p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Learning Objectives</h2>
+      </div>
+      <ul class="objectives-list">
+        <li class="objective-item"><span class="objective-bullet">→</span> Install Claude Code CLI and authenticate</li>
+        <li class="objective-item"><span class="objective-bullet">→</span> Understand when to use Claude Code vs Cursor</li>
+        <li class="objective-item"><span class="objective-bullet">→</span> Learn essential Claude Code commands</li>
+        <li class="objective-item"><span class="objective-bullet">→</span> Complete your first AI-assisted coding task</li>
+        <li class="objective-item"><span class="objective-bullet">→</span> Practice effective prompting techniques</li>
+      </ul>
+    </section>
+
+    <div class="callout callout-info">
+      <div class="callout-header">
+        <span class="callout-icon">🧠</span>
+        <span class="callout-title">Cursor vs Claude Code</span>
+      </div>
+      <div class="callout-content">
+        <p><strong>Cursor</strong> = Flow-state coding in the IDE. Quick edits, inline suggestions.</p>
+        <p><strong>Claude Code</strong> = Deep reasoning agent. Complex tasks, multi-file operations.</p>
+        <p>Top developers use <em>both</em> depending on the task.</p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Step-by-Step Instructions</h2>
+      </div>
+
+      <div class="step open">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-number">1</span>
+          <span class="step-title">Install Claude Code CLI</span>
+          <span class="step-meta">~10 min</span>
+          <svg class="step-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="step-body">
+          <div class="step-content">
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-lang">${isWin ? 'powershell' : 'bash'}</span>
+                <button class="code-copy" onclick="copyCode(this)">Copy</button>
+              </div>
+              <div class="code-body">
+                <pre>npm install -g @anthropic-ai/claude-code
+claude --version</pre>
+              </div>
+            </div>
+
+            ${isWin ? `
+            <div class="callout callout-warning">
+              <div class="callout-header">
+                <span class="callout-icon">⚠️</span>
+                <span class="callout-title">Permission Error?</span>
+              </div>
+              <div class="callout-content">
+                <p>Run your terminal as Administrator (right-click → Run as administrator)</p>
+              </div>
+            </div>
+            ` : ''}
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-number">2</span>
+          <span class="step-title">Authenticate</span>
+          <span class="step-meta">~5 min</span>
+          <svg class="step-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="step-body">
+          <div class="step-content">
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-lang">${isWin ? 'powershell' : 'bash'}</span>
+                <button class="code-copy" onclick="copyCode(this)">Copy</button>
+              </div>
+              <div class="code-body">
+                <pre>claude auth</pre>
+              </div>
+            </div>
+            <p class="step-desc">This opens a browser. Sign in at console.anthropic.com</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-number">3</span>
+          <span class="step-title">Your First Task</span>
+          <span class="step-meta">~20 min</span>
+          <svg class="step-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="step-body">
+          <div class="step-content">
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-lang">${isWin ? 'powershell' : 'bash'}</span>
+                <button class="code-copy" onclick="copyCode(this)">Copy</button>
+              </div>
+              <div class="code-body">
+                <pre>${isWin ? `mkdir day2-practice
+cd day2-practice
+claude` : `mkdir day2-practice && cd day2-practice
+claude`}</pre>
+              </div>
+            </div>
+
+            <div class="callout callout-ai">
+              <div class="callout-header">
+                <span class="callout-icon">🤖</span>
+                <span class="callout-title">Claude Code Prompt</span>
+              </div>
+              <div class="callout-content">
+                <p>"Create a Node.js script called 'file-organizer.js' that scans the current directory, groups files by extension, and prints a summary showing count and total size for each file type."</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="deliverable">
+      <div class="deliverable-header">
+        <span class="deliverable-icon">🎯</span>
+        <span class="deliverable-title">Today's Deliverable</span>
+      </div>
+      <div class="deliverable-text">Claude Code installed and authenticated. A working file-organizer.js script created through natural language prompts.</div>
+    </div>
+
+    ${dayNav(2)}
+  `;
+  },
+
+  3: function() {
+    const isWin = currentOS === 'windows';
+    return `
+    <div class="hero" style="min-height: 180px;">
+      <div class="hero-texture"></div>
+      <div class="hero-content">
+        <div class="hero-badge">Day 3 · Week 1</div>
+        <h1 class="hero-title">React Basics Part 1</h1>
+        <p class="hero-description">Create your first React application and learn the fundamentals.</p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Learning Objectives</h2>
+      </div>
+      <ul class="objectives-list">
+        <li class="objective-item"><span class="objective-bullet">→</span> Understand what React is and why it's used</li>
+        <li class="objective-item"><span class="objective-bullet">→</span> Create a React project using Vite</li>
+        <li class="objective-item"><span class="objective-bullet">→</span> Understand components and JSX syntax</li>
+        <li class="objective-item"><span class="objective-bullet">→</span> Use useState to make interactive components</li>
+        <li class="objective-item"><span class="objective-bullet">→</span> Build a working counter component</li>
+      </ul>
+    </section>
+
+    <div class="callout callout-info">
+      <div class="callout-header">
+        <span class="callout-icon">🧠</span>
+        <span class="callout-title">What is React?</span>
+      </div>
+      <div class="callout-content">
+        <p><strong>Components</strong> — Building blocks of UI (like LEGO)</p>
+        <p><strong>JSX</strong> — HTML-like syntax in JavaScript</p>
+        <p><strong>State</strong> — Data that triggers re-renders when changed</p>
+        <p><strong>Props</strong> — Data passed between components</p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Step-by-Step Instructions</h2>
+      </div>
+
+      <div class="step open">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-number">1</span>
+          <span class="step-title">Create React Project with Vite</span>
+          <span class="step-meta">~10 min</span>
+          <svg class="step-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="step-body">
+          <div class="step-content">
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-lang">${isWin ? 'powershell' : 'bash'}</span>
+                <button class="code-copy" onclick="copyCode(this)">Copy</button>
+              </div>
+              <div class="code-body">
+                <pre>npm create vite@latest my-react-app -- --template react
+cd my-react-app
+npm install
+npm run dev</pre>
+              </div>
+            </div>
+
+            <div class="callout callout-tip">
+              <div class="callout-header">
+                <span class="callout-icon">✓</span>
+                <span class="callout-title">Success Check</span>
+              </div>
+              <div class="callout-content">
+                <p>Open http://localhost:5173 — you should see the Vite + React page</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-number">2</span>
+          <span class="step-title">Build Counter Component</span>
+          <span class="step-meta">~30 min</span>
+          <svg class="step-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="step-body">
+          <div class="step-content">
+            <p class="step-desc">Replace src/App.jsx with:</p>
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-lang">jsx</span>
+                <button class="code-copy" onclick="copyCode(this)">Copy</button>
+              </div>
+              <div class="code-body">
+                <pre>import { useState } from 'react'
+
+function App() {
+  const [count, setCount] = useState(0)
+
+  return (
+    &lt;div style={{ textAlign: 'center', padding: '2rem' }}&gt;
+      &lt;h1&gt;Counter App&lt;/h1&gt;
+      &lt;p style={{ fontSize: '3rem' }}&gt;{count}&lt;/p&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;+&lt;/button&gt;
+      &lt;button onClick={() =&gt; setCount(count - 1)}&gt;-&lt;/button&gt;
+      &lt;button onClick={() =&gt; setCount(0)}&gt;Reset&lt;/button&gt;
+    &lt;/div&gt;
+  )
+}
+
+export default App</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header" onclick="toggleStep(this)">
+          <span class="step-number">3</span>
+          <span class="step-title">AI Enhancement</span>
+          <span class="step-meta">~20 min</span>
+          <svg class="step-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="step-body">
+          <div class="step-content">
+            <p class="step-desc">Select the code and press <kbd>${modKey()} + K</kbd>:</p>
+            <div class="callout callout-ai">
+              <div class="callout-header">
+                <span class="callout-icon">🤖</span>
+                <span class="callout-title">Cursor Prompt</span>
+              </div>
+              <div class="callout-content">
+                <p>"Add localStorage persistence so the count survives page refresh. Also add a step size input."</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="deliverable">
+      <div class="deliverable-header">
+        <span class="deliverable-icon">🎯</span>
+        <span class="deliverable-title">Today's Deliverable</span>
+      </div>
+      <div class="deliverable-text">A working React counter with localStorage persistence and configurable step size.</div>
+    </div>
+
+    ${dayNav(3)}
+  `;
+  }
+};
+
+// Initialize
+renderNav();
+loadDay(0);
+  </script>
+</body>
+</html>
