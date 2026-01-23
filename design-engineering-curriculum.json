@@ -32,6 +32,43 @@
       "days": [22, 23, 24, 25, 26, 27, 28]
     }
   ],
+  "tracks": {
+    "vibe-coding": {
+      "name": "Vibe Coding",
+      "color": "#22d3ee",
+      "description": "AI-assisted development tools and workflows"
+    },
+    "react": {
+      "name": "React",
+      "color": "#60a5fa",
+      "description": "React fundamentals and advanced patterns"
+    },
+    "three-js": {
+      "name": "Three.js",
+      "color": "#a78bfa",
+      "description": "3D graphics and animations"
+    },
+    "design-systems": {
+      "name": "Design Systems",
+      "color": "#fb923c",
+      "description": "Component libraries and documentation"
+    },
+    "portfolio": {
+      "name": "Portfolio",
+      "color": "#4ade80",
+      "description": "Portfolio building and deployment"
+    }
+  },
+  "shortcuts": {
+    "modKey": {
+      "windows": "Ctrl",
+      "mac": "Cmd"
+    },
+    "optKey": {
+      "windows": "Alt",
+      "mac": "Option"
+    }
+  },
   "days": {
     "1": {
       "day": 1,
@@ -686,19 +723,136 @@
       "day": 8,
       "week": 2,
       "title": "State Management",
-      "description": "Master useReducer and Context API for complex state.",
+      "description": "Master useReducer and Context API for complex state management.",
       "duration": "3-4 hours",
       "track": "react",
       "objectives": [
-        "Understand when useState becomes insufficient",
+        "Recognize when useState becomes insufficient",
         "Learn useReducer for complex state logic",
         "Implement Context API for global state",
-        "Understand state management patterns",
+        "Combine useReducer + Context pattern",
         "Avoid common state management pitfalls"
+      ],
+      "concepts": {
+        "title": "When to Use What",
+        "content": "Different state tools for different needs. The key is choosing the right tool for your specific situation.",
+        "keyPoints": [
+          {"term": "useState", "definition": "Best for simple, independent values — a toggle, a form field, a counter"},
+          {"term": "useReducer", "definition": "Best for complex state with multiple sub-values or when next state depends on previous"},
+          {"term": "Context", "definition": "Best for state that many components need access to — theme, user, language"},
+          {"term": "External Libraries", "definition": "Redux, Zustand, Jotai for large apps with complex requirements"}
+        ]
+      },
+      "steps": [
+        {
+          "step": 1,
+          "title": "useReducer Fundamentals",
+          "duration": "~30 min",
+          "description": "Learn the reducer pattern for predictable state updates.",
+          "info": {
+            "title": "Why useReducer?",
+            "content": "When state logic gets complex (multiple related values, complex update logic), useReducer makes it more predictable. All state changes go through a single function with clear action types."
+          },
+          "code": {
+            "filename": "useReducer Basics",
+            "language": "jsx",
+            "content": "import { useReducer } from 'react'\n\n// 1. Define initial state\nconst initialState = {\n  count: 0,\n  step: 1,\n  history: []\n}\n\n// 2. Define reducer function\nfunction counterReducer(state, action) {\n  switch (action.type) {\n    case 'INCREMENT':\n      return {\n        ...state,\n        count: state.count + state.step,\n        history: [...state.history, state.count + state.step]\n      }\n    case 'DECREMENT':\n      return {\n        ...state,\n        count: state.count - state.step,\n        history: [...state.history, state.count - state.step]\n      }\n    case 'SET_STEP':\n      return {\n        ...state,\n        step: action.payload\n      }\n    case 'RESET':\n      return initialState\n    default:\n      throw new Error(`Unknown action: ${action.type}`)\n  }\n}\n\n// 3. Use in component\nfunction Counter() {\n  const [state, dispatch] = useReducer(counterReducer, initialState)\n\n  return (\n    <div className=\"p-6 bg-white rounded-xl shadow-md\">\n      <h2 className=\"text-2xl font-bold mb-4\">Count: {state.count}</h2>\n      \n      <div className=\"flex gap-2 mb-4\">\n        <button\n          onClick={() => dispatch({ type: 'DECREMENT' })}\n          className=\"px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600\"\n        >\n          - {state.step}\n        </button>\n        <button\n          onClick={() => dispatch({ type: 'INCREMENT' })}\n          className=\"px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600\"\n        >\n          + {state.step}\n        </button>\n      </div>\n      \n      <div className=\"flex items-center gap-2 mb-4\">\n        <label className=\"text-sm text-gray-600\">Step:</label>\n        <input\n          type=\"number\"\n          value={state.step}\n          onChange={(e) => dispatch({ type: 'SET_STEP', payload: Number(e.target.value) })}\n          className=\"w-20 px-2 py-1 border rounded\"\n          min=\"1\"\n        />\n      </div>\n      \n      <button\n        onClick={() => dispatch({ type: 'RESET' })}\n        className=\"text-sm text-gray-500 hover:text-gray-700\"\n      >\n        Reset\n      </button>\n      \n      {state.history.length > 0 && (\n        <div className=\"mt-4 text-sm text-gray-500\">\n          History: {state.history.join(' → ')}\n        </div>\n      )}\n    </div>\n  )\n}"
+          }
+        },
+        {
+          "step": 2,
+          "title": "Context API Basics",
+          "duration": "~30 min",
+          "description": "Share state across components without prop drilling.",
+          "info": {
+            "title": "Prop Drilling Problem",
+            "content": "Without Context, passing state through many component levels is tedious and error-prone. Context lets you 'teleport' data to any component that needs it."
+          },
+          "code": {
+            "filename": "src/context/ThemeContext.jsx",
+            "language": "jsx",
+            "content": "import { createContext, useContext, useState, useEffect } from 'react'\n\n// 1. Create the context\nconst ThemeContext = createContext(null)\n\n// 2. Create a provider component\nexport function ThemeProvider({ children }) {\n  const [theme, setTheme] = useState(() => {\n    // Check localStorage or system preference\n    const saved = localStorage.getItem('theme')\n    if (saved) return saved\n    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'\n  })\n\n  useEffect(() => {\n    localStorage.setItem('theme', theme)\n    // Update document class for Tailwind dark mode\n    document.documentElement.classList.toggle('dark', theme === 'dark')\n  }, [theme])\n\n  const toggleTheme = () => {\n    setTheme(prev => prev === 'light' ? 'dark' : 'light')\n  }\n\n  const value = {\n    theme,\n    toggleTheme,\n    isDark: theme === 'dark'\n  }\n\n  return (\n    <ThemeContext.Provider value={value}>\n      {children}\n    </ThemeContext.Provider>\n  )\n}\n\n// 3. Create a custom hook for easy access\nexport function useTheme() {\n  const context = useContext(ThemeContext)\n  if (!context) {\n    throw new Error('useTheme must be used within a ThemeProvider')\n  }\n  return context\n}\n\nexport default ThemeContext"
+          },
+          "followUpCode": {
+            "filename": "Using the Theme Context",
+            "language": "jsx",
+            "content": "// In main.jsx or App.jsx - wrap your app\nimport { ThemeProvider } from './context/ThemeContext'\n\nfunction App() {\n  return (\n    <ThemeProvider>\n      <Dashboard />\n    </ThemeProvider>\n  )\n}\n\n// In any component - use the context\nimport { useTheme } from '../context/ThemeContext'\n\nfunction Header() {\n  const { theme, toggleTheme, isDark } = useTheme()\n\n  return (\n    <header className=\"bg-white dark:bg-gray-800 p-4\">\n      <button onClick={toggleTheme}>\n        {isDark ? '☀️ Light' : '🌙 Dark'}\n      </button>\n    </header>\n  )\n}\n\n// Works in deeply nested components too!\nfunction DeepNestedComponent() {\n  const { isDark } = useTheme()\n  return <p>Current theme: {isDark ? 'Dark' : 'Light'}</p>\n}"
+          }
+        },
+        {
+          "step": 3,
+          "title": "Combining useReducer + Context",
+          "duration": "~35 min",
+          "description": "The powerful pattern for app-wide state management.",
+          "code": {
+            "filename": "src/context/CartContext.jsx",
+            "language": "jsx",
+            "content": "import { createContext, useContext, useReducer, useEffect } from 'react'\n\n// Action types as constants (prevents typos)\nconst ACTIONS = {\n  ADD_ITEM: 'ADD_ITEM',\n  REMOVE_ITEM: 'REMOVE_ITEM',\n  UPDATE_QUANTITY: 'UPDATE_QUANTITY',\n  CLEAR_CART: 'CLEAR_CART',\n  LOAD_CART: 'LOAD_CART'\n}\n\n// Initial state\nconst initialState = {\n  items: [],\n  totalItems: 0,\n  totalPrice: 0\n}\n\n// Helper to calculate totals\nfunction calculateTotals(items) {\n  return {\n    totalItems: items.reduce((sum, item) => sum + item.quantity, 0),\n    totalPrice: items.reduce((sum, item) => sum + (item.price * item.quantity), 0)\n  }\n}\n\n// Reducer function\nfunction cartReducer(state, action) {\n  switch (action.type) {\n    case ACTIONS.ADD_ITEM: {\n      const existingIndex = state.items.findIndex(item => item.id === action.payload.id)\n      \n      let newItems\n      if (existingIndex >= 0) {\n        // Item exists, increase quantity\n        newItems = state.items.map((item, index) =>\n          index === existingIndex\n            ? { ...item, quantity: item.quantity + 1 }\n            : item\n        )\n      } else {\n        // New item\n        newItems = [...state.items, { ...action.payload, quantity: 1 }]\n      }\n      \n      return { ...state, items: newItems, ...calculateTotals(newItems) }\n    }\n    \n    case ACTIONS.REMOVE_ITEM: {\n      const newItems = state.items.filter(item => item.id !== action.payload)\n      return { ...state, items: newItems, ...calculateTotals(newItems) }\n    }\n    \n    case ACTIONS.UPDATE_QUANTITY: {\n      const { id, quantity } = action.payload\n      if (quantity <= 0) {\n        const newItems = state.items.filter(item => item.id !== id)\n        return { ...state, items: newItems, ...calculateTotals(newItems) }\n      }\n      const newItems = state.items.map(item =>\n        item.id === id ? { ...item, quantity } : item\n      )\n      return { ...state, items: newItems, ...calculateTotals(newItems) }\n    }\n    \n    case ACTIONS.CLEAR_CART:\n      return initialState\n    \n    case ACTIONS.LOAD_CART:\n      return { ...action.payload }\n    \n    default:\n      throw new Error(`Unknown action: ${action.type}`)\n  }\n}\n\n// Create context\nconst CartContext = createContext(null)\n\n// Provider component\nexport function CartProvider({ children }) {\n  const [state, dispatch] = useReducer(cartReducer, initialState)\n\n  // Load cart from localStorage on mount\n  useEffect(() => {\n    const saved = localStorage.getItem('cart')\n    if (saved) {\n      dispatch({ type: ACTIONS.LOAD_CART, payload: JSON.parse(saved) })\n    }\n  }, [])\n\n  // Save cart to localStorage on change\n  useEffect(() => {\n    localStorage.setItem('cart', JSON.stringify(state))\n  }, [state])\n\n  // Action creators (cleaner API for components)\n  const addItem = (item) => dispatch({ type: ACTIONS.ADD_ITEM, payload: item })\n  const removeItem = (id) => dispatch({ type: ACTIONS.REMOVE_ITEM, payload: id })\n  const updateQuantity = (id, quantity) => dispatch({ type: ACTIONS.UPDATE_QUANTITY, payload: { id, quantity } })\n  const clearCart = () => dispatch({ type: ACTIONS.CLEAR_CART })\n\n  const value = {\n    ...state,\n    addItem,\n    removeItem,\n    updateQuantity,\n    clearCart\n  }\n\n  return (\n    <CartContext.Provider value={value}>\n      {children}\n    </CartContext.Provider>\n  )\n}\n\n// Custom hook\nexport function useCart() {\n  const context = useContext(CartContext)\n  if (!context) {\n    throw new Error('useCart must be used within a CartProvider')\n  }\n  return context\n}\n\nexport { ACTIONS }"
+          }
+        },
+        {
+          "step": 4,
+          "title": "Build Cart Components",
+          "duration": "~30 min",
+          "description": "Create components that use the cart context.",
+          "code": {
+            "filename": "src/components/ProductCard.jsx",
+            "language": "jsx",
+            "content": "import { useCart } from '../context/CartContext'\n\nfunction ProductCard({ product }) {\n  const { addItem, items } = useCart()\n  \n  const cartItem = items.find(item => item.id === product.id)\n  const quantityInCart = cartItem?.quantity || 0\n\n  return (\n    <div className=\"bg-white rounded-xl shadow-md overflow-hidden\">\n      <img \n        src={product.image} \n        alt={product.name}\n        className=\"w-full h-48 object-cover\"\n      />\n      <div className=\"p-4\">\n        <h3 className=\"font-semibold text-gray-900\">{product.name}</h3>\n        <p className=\"text-gray-600 text-sm mb-2\">{product.description}</p>\n        <div className=\"flex items-center justify-between\">\n          <span className=\"text-lg font-bold text-blue-600\">\n            ${product.price.toFixed(2)}\n          </span>\n          <button\n            onClick={() => addItem(product)}\n            className=\"px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors\"\n          >\n            Add to Cart\n            {quantityInCart > 0 && (\n              <span className=\"ml-2 bg-blue-500 px-2 py-0.5 rounded-full text-xs\">\n                {quantityInCart}\n              </span>\n            )}\n          </button>\n        </div>\n      </div>\n    </div>\n  )\n}"
+          },
+          "followUpCode": {
+            "filename": "src/components/CartSidebar.jsx",
+            "language": "jsx",
+            "content": "import { useCart } from '../context/CartContext'\n\nfunction CartSidebar({ isOpen, onClose }) {\n  const { items, totalItems, totalPrice, removeItem, updateQuantity, clearCart } = useCart()\n\n  if (!isOpen) return null\n\n  return (\n    <div className=\"fixed inset-0 z-50\">\n      {/* Backdrop */}\n      <div className=\"absolute inset-0 bg-black/50\" onClick={onClose} />\n      \n      {/* Sidebar */}\n      <div className=\"absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl\">\n        <div className=\"flex flex-col h-full\">\n          {/* Header */}\n          <div className=\"flex items-center justify-between p-4 border-b\">\n            <h2 className=\"text-lg font-semibold\">Cart ({totalItems})</h2>\n            <button onClick={onClose} className=\"text-gray-500 hover:text-gray-700\">✕</button>\n          </div>\n          \n          {/* Items */}\n          <div className=\"flex-1 overflow-y-auto p-4\">\n            {items.length === 0 ? (\n              <p className=\"text-gray-500 text-center py-8\">Your cart is empty</p>\n            ) : (\n              <div className=\"space-y-4\">\n                {items.map(item => (\n                  <div key={item.id} className=\"flex gap-4 p-3 bg-gray-50 rounded-lg\">\n                    <img src={item.image} alt={item.name} className=\"w-16 h-16 object-cover rounded\" />\n                    <div className=\"flex-1\">\n                      <h3 className=\"font-medium\">{item.name}</h3>\n                      <p className=\"text-blue-600\">${item.price.toFixed(2)}</p>\n                      <div className=\"flex items-center gap-2 mt-1\">\n                        <button\n                          onClick={() => updateQuantity(item.id, item.quantity - 1)}\n                          className=\"w-6 h-6 rounded bg-gray-200 hover:bg-gray-300\"\n                        >\n                          -\n                        </button>\n                        <span className=\"text-sm\">{item.quantity}</span>\n                        <button\n                          onClick={() => updateQuantity(item.id, item.quantity + 1)}\n                          className=\"w-6 h-6 rounded bg-gray-200 hover:bg-gray-300\"\n                        >\n                          +\n                        </button>\n                      </div>\n                    </div>\n                    <button\n                      onClick={() => removeItem(item.id)}\n                      className=\"text-red-500 hover:text-red-700\"\n                    >\n                      🗑️\n                    </button>\n                  </div>\n                ))}\n              </div>\n            )}\n          </div>\n          \n          {/* Footer */}\n          {items.length > 0 && (\n            <div className=\"border-t p-4\">\n              <div className=\"flex justify-between mb-4\">\n                <span className=\"font-semibold\">Total:</span>\n                <span className=\"font-bold text-xl\">${totalPrice.toFixed(2)}</span>\n              </div>\n              <button className=\"w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 mb-2\">\n                Checkout\n              </button>\n              <button\n                onClick={clearCart}\n                className=\"w-full py-2 text-gray-600 hover:text-gray-800 text-sm\"\n              >\n                Clear Cart\n              </button>\n            </div>\n          )}\n        </div>\n      </div>\n    </div>\n  )\n}\n\nexport default CartSidebar"
+          }
+        },
+        {
+          "step": 5,
+          "title": "State Management Best Practices",
+          "duration": "~25 min",
+          "description": "Learn patterns to avoid common pitfalls.",
+          "info": {
+            "title": "Key Principles",
+            "content": "1. Keep state as flat as possible — avoid deeply nested objects\n2. Normalize data — store items by ID, reference by ID\n3. Derive values instead of storing duplicates (totalPrice computed, not stored)\n4. Colocate state — keep it close to where it's used\n5. Separate UI state from server/data state"
+          },
+          "code": {
+            "filename": "State Organization Patterns",
+            "language": "jsx",
+            "content": "// ❌ BAD: Deeply nested state\nconst badState = {\n  user: {\n    profile: {\n      settings: {\n        notifications: {\n          email: true\n        }\n      }\n    }\n  }\n}\n\n// ✅ GOOD: Flat state\nconst goodState = {\n  user: { id: 1, name: 'John' },\n  userSettings: { userId: 1, emailNotifications: true }\n}\n\n// ❌ BAD: Storing derived values\nconst badCartState = {\n  items: [...],\n  totalItems: 5,      // Can be derived!\n  totalPrice: 99.99   // Can be derived!\n}\n\n// ✅ GOOD: Derive in component or selector\nfunction useCartTotals() {\n  const { items } = useCart()\n  return useMemo(() => ({\n    totalItems: items.reduce((sum, i) => sum + i.quantity, 0),\n    totalPrice: items.reduce((sum, i) => sum + i.price * i.quantity, 0)\n  }), [items])\n}\n\n// ❌ BAD: All state in one global context\n<AppContext.Provider value={{ user, theme, cart, notifications, ... }}>\n\n// ✅ GOOD: Separate contexts by domain\n<ThemeProvider>\n  <AuthProvider>\n    <CartProvider>\n      <App />\n    </CartProvider>\n  </AuthProvider>\n</ThemeProvider>"
+          }
+        },
+        {
+          "step": 6,
+          "title": "Refactor Dashboard with Context",
+          "duration": "~30 min",
+          "description": "Apply these patterns to your dashboard project.",
+          "substeps": {
+            "shared": [
+              "Create a DashboardContext for shared dashboard state",
+              "Move dark mode to ThemeContext",
+              "Consider: should each widget have its own context?",
+              "Test that everything still works"
+            ]
+          },
+          "code": {
+            "filename": "src/context/DashboardContext.jsx",
+            "language": "jsx",
+            "content": "import { createContext, useContext, useReducer } from 'react'\n\nconst DashboardContext = createContext(null)\n\nconst initialState = {\n  activeWidget: null,\n  sidebarOpen: true,\n  layout: 'grid' // or 'list'\n}\n\nfunction dashboardReducer(state, action) {\n  switch (action.type) {\n    case 'SET_ACTIVE_WIDGET':\n      return { ...state, activeWidget: action.payload }\n    case 'TOGGLE_SIDEBAR':\n      return { ...state, sidebarOpen: !state.sidebarOpen }\n    case 'SET_LAYOUT':\n      return { ...state, layout: action.payload }\n    default:\n      return state\n  }\n}\n\nexport function DashboardProvider({ children }) {\n  const [state, dispatch] = useReducer(dashboardReducer, initialState)\n\n  const setActiveWidget = (id) => dispatch({ type: 'SET_ACTIVE_WIDGET', payload: id })\n  const toggleSidebar = () => dispatch({ type: 'TOGGLE_SIDEBAR' })\n  const setLayout = (layout) => dispatch({ type: 'SET_LAYOUT', payload: layout })\n\n  return (\n    <DashboardContext.Provider value={{ ...state, setActiveWidget, toggleSidebar, setLayout }}>\n      {children}\n    </DashboardContext.Provider>\n  )\n}\n\nexport function useDashboard() {\n  const context = useContext(DashboardContext)\n  if (!context) throw new Error('useDashboard must be used within DashboardProvider')\n  return context\n}"
+          },
+          "aiPrompt": {
+            "tool": "Claude Code",
+            "prompt": "Refactor the TodoWidget to use useReducer instead of multiple useState calls. The reducer should handle: ADD_TODO, TOGGLE_TODO, DELETE_TODO, EDIT_TODO, SET_FILTER actions."
+          }
+        }
+      ],
+      "resources": [
+        {"title": "useReducer Documentation", "url": "https://react.dev/reference/react/useReducer", "description": "Official React docs", "icon": "📗"},
+        {"title": "Context Documentation", "url": "https://react.dev/learn/passing-data-deeply-with-context", "description": "When and how to use Context", "icon": "📘"},
+        {"title": "Application State Management", "url": "https://kentcdodds.com/blog/application-state-management-with-react", "description": "Deep dive by Kent C. Dodds", "icon": "📙"}
       ],
       "deliverable": {
         "title": "Today's Deliverable",
-        "description": "Dashboard refactored with Context API for theme/user preferences and useReducer for complex widgets."
+        "description": "Dashboard refactored with ThemeContext, DashboardContext, and at least one widget using useReducer for state management."
       }
     },
     "9": {
@@ -709,15 +863,72 @@
       "duration": "3-4 hours",
       "track": "react",
       "objectives": [
-        "Master useEffect for side effects",
+        "Master useEffect for side effects and cleanup",
         "Learn useRef for DOM access and persistent values",
         "Understand useMemo and useCallback for optimization",
         "Create custom hooks for reusable logic",
         "Avoid common hooks pitfalls"
       ],
+      "concepts": {
+        "title": "Hooks Under the Hood",
+        "content": "Hooks allow function components to 'hook into' React state and lifecycle features.",
+        "keyPoints": [
+          { "term": "Dependencies", "definition": "The array at the end of useEffect/useMemo. If these change, the effect runs again." },
+          { "term": "Cleanup Function", "definition": "Function returned by useEffect to clean up event listeners or intervals." },
+          { "term": "Custom Hooks", "definition": "JavaScript functions that start with 'use' and can call other hooks." }
+        ]
+      },
+      "steps": [
+        {
+          "step": 1,
+          "title": "Mastering useEffect Cleanup",
+          "duration": "~40 min",
+          "description": "Understanding when effects run and how to clean them up is crucial for preventing memory leaks.",
+          "code": {
+            "filename": "src/components/WindowTracker.jsx",
+            "language": "jsx",
+            "content": "import { useState, useEffect } from 'react'\n\nfunction WindowTracker() {\n  const [windowWidth, setWindowWidth] = useState(window.innerWidth)\n\n  useEffect(() => {\n    // 1. Setup\n    const handleResize = () => {\n      console.log('Resized!')\n      setWindowWidth(window.innerWidth)\n    }\n    \n    window.addEventListener('resize', handleResize)\n    \n    // 2. Cleanup (CRITICAL)\n    // Without this, you get memory leaks and multiple listeners\n    return () => {\n      console.log('Cleaning up...')\n      window.removeEventListener('resize', handleResize)\n    }\n  }, []) // Empty array = run once on mount\n\n  return <h1>Window Width: {windowWidth}</h1>\n}"
+          }
+        },
+        {
+          "step": 2,
+          "title": "Using useRef",
+          "duration": "~30 min",
+          "description": "useRef is like a 'box' that can hold a mutable value in its .current property.",
+          "info": {
+            "title": "Two Main Uses",
+            "content": "1. Accessing DOM elements directly (focusing inputs, scrolling).\n2. Storing values that persist across renders but DO NOT trigger re-renders."
+          },
+          "code": {
+            "filename": "src/components/FocusInput.jsx",
+            "language": "jsx",
+            "content": "import { useRef } from 'react'\n\nfunction FocusInput() {\n  const inputRef = useRef(null)\n  const renderCount = useRef(0)\n\n  // This updates immediately but doesn't cause a re-render visual update\n  renderCount.current++\n\n  const focusElement = () => {\n    // Access the DOM node directly\n    inputRef.current.focus()\n    inputRef.current.style.backgroundColor = '#f0f9ff'\n  }\n\n  return (\n    <div>\n      <p>Component render count: {renderCount.current}</p>\n      <input ref={inputRef} type=\"text\" placeholder=\"Click button to focus\" />\n      <button onClick={focusElement}>Focus Input</button>\n    </div>\n  )\n}"
+          }
+        },
+        {
+          "step": 3,
+          "title": "Building a Custom Hook",
+          "duration": "~45 min",
+          "description": "Extract logic into a reusable 'useLocalStorage' hook.",
+          "code": {
+            "filename": "src/hooks/useLocalStorage.js",
+            "language": "javascript",
+            "content": "import { useState, useEffect } from 'react'\n\nexport function useLocalStorage(key, initialValue) {\n  // 1. Initialize state lazily\n  const [value, setValue] = useState(() => {\n    try {\n      const item = window.localStorage.getItem(key)\n      return item ? JSON.parse(item) : initialValue\n    } catch (error) {\n      console.error(error)\n      return initialValue\n    }\n  })\n\n  // 2. Update localStorage when state changes\n  useEffect(() => {\n    try {\n      window.localStorage.setItem(key, JSON.stringify(value))\n    } catch (error) {\n      console.error(error)\n    }\n  }, [key, value])\n\n  return [value, setValue]\n}"
+          },
+          "followUpCode": {
+            "filename": "Usage Example",
+            "language": "jsx",
+            "content": "import { useLocalStorage } from '../hooks/useLocalStorage'\n\nfunction App() {\n  const [name, setName] = useLocalStorage('user-name', 'Guest')\n  \n  return (\n    <input \n      value={name} \n      onChange={e => setName(e.target.value)} \n    />\n  )\n}"
+          }
+        }
+      ],
+      "resources": [
+        { "title": "Hooks API Reference", "url": "https://react.dev/reference/react", "description": "Official API docs", "icon": "📗" },
+        { "title": "useHooks.com", "url": "https://usehooks.com/", "description": "Collection of modern safe React hooks", "icon": "🔗" }
+      ],
       "deliverable": {
         "title": "Today's Deliverable",
-        "description": "A custom hooks library with 5+ reusable hooks: useLocalStorage, useDebounce, useFetch, useMediaQuery, useClickOutside."
+        "description": "A 'hooks' folder containing useLocalStorage, useWindowSize, and useClickOutside, integrated into the dashboard widgets."
       }
     },
     "10": {
@@ -734,9 +945,56 @@
         "Learn form libraries (React Hook Form)",
         "Create accessible form components"
       ],
+      "concepts": {
+        "title": "Form Strategies",
+        "content": "Handling forms is one of the hardest parts of frontend dev due to validation, touched states, and error messages.",
+        "keyPoints": [
+          { "term": "Controlled", "definition": "React state controls the input value (value={state})." },
+          { "term": "Uncontrolled", "definition": "The DOM handles the value, accessed via ref." },
+          { "term": "Validation", "definition": "Checking data before submission (required, regex patterns)." }
+        ]
+      },
+      "steps": [
+        {
+          "step": 1,
+          "title": "Controlled Inputs",
+          "duration": "~30 min",
+          "description": "The standard React way to handle inputs.",
+          "code": {
+            "filename": "src/components/SimpleForm.jsx",
+            "language": "jsx",
+            "content": "import { useState } from 'react'\n\nfunction SimpleForm() {\n  const [formData, setFormData] = useState({\n    username: '',\n    email: '',\n    role: 'user'\n  })\n\n  const handleChange = (e) => {\n    const { name, value } = e.target\n    setFormData(prev => ({\n      ...prev,\n      [name]: value\n    }))\n  }\n\n  const handleSubmit = (e) => {\n    e.preventDefault()\n    console.log(formData)\n  }\n\n  return (\n    <form onSubmit={handleSubmit} className=\"flex flex-col gap-4 max-w-sm\">\n      <input\n        name=\"username\"\n        value={formData.username}\n        onChange={handleChange}\n        placeholder=\"Username\"\n        className=\"border p-2 rounded\"\n      />\n      <input\n        name=\"email\"\n        type=\"email\"\n        value={formData.email}\n        onChange={handleChange}\n        placeholder=\"Email\"\n        className=\"border p-2 rounded\"\n      />\n      <button type=\"submit\" className=\"bg-blue-500 text-white p-2 rounded\">\n        Submit\n      </button>\n    </form>\n  )\n}"
+          }
+        },
+        {
+          "step": 2,
+          "title": "Validation Logic",
+          "duration": "~40 min",
+          "description": "Add error state and validation checks.",
+          "aiPrompt": {
+            "tool": "Cursor",
+            "prompt": "Update the SimpleForm component to include an 'errors' state object. Validate that username is at least 3 chars and email is valid on submit. Display red error text below invalid inputs."
+          }
+        },
+        {
+          "step": 3,
+          "title": "Intro to React Hook Form",
+          "duration": "~45 min",
+          "description": "For complex forms, manual state is tedious. React Hook Form is the industry standard.",
+          "commands": { "shared": "npm install react-hook-form" },
+          "code": {
+            "filename": "src/components/SmartForm.jsx",
+            "language": "jsx",
+            "content": "import { useForm } from 'react-hook-form'\n\nfunction SmartForm() {\n  const {\n    register,\n    handleSubmit,\n    formState: { errors }\n  } = useForm()\n\n  const onSubmit = (data) => console.log(data)\n\n  return (\n    <form onSubmit={handleSubmit(onSubmit)} className=\"flex flex-col gap-4\">\n      <div>\n        <input\n          {...register(\"username\", { required: true, minLength: 3 })}\n          placeholder=\"Username\"\n          className=\"border p-2 rounded w-full\"\n        />\n        {errors.username && <span className=\"text-red-500 text-sm\">Username is required (min 3)</span>}\n      </div>\n      \n      <button type=\"submit\" className=\"bg-green-500 text-white p-2 rounded\">\n        Register\n      </button>\n    </form>\n  )\n}"
+          }
+        }
+      ],
+      "resources": [
+        { "title": "React Hook Form", "url": "https://react-hook-form.com/", "description": "Performant, flexible validation", "icon": "📋" }
+      ],
       "deliverable": {
         "title": "Today's Deliverable",
-        "description": "A multi-step registration form with validation, error handling, and accessibility features."
+        "description": "A multi-step registration form for the dashboard with validation, error handling, and success states."
       }
     },
     "11": {
@@ -747,15 +1005,57 @@
       "duration": "3-4 hours",
       "track": "react",
       "objectives": [
-        "Fetch data from REST APIs",
+        "Fetch data from REST APIs using fetch()",
         "Handle loading, error, and success states",
         "Implement data caching strategies",
-        "Learn React Query basics",
-        "Build a data-fetching custom hook"
+        "Build a data-fetching custom hook",
+        "Display async data effectively"
+      ],
+      "concepts": {
+        "title": "Async Data in React",
+        "content": "Components render immediately, but data takes time to arrive. You need to handle the 'gap' time.",
+        "keyPoints": [
+          { "term": "Race Conditions", "definition": "When a new request starts before the old one finishes. Cleanup is needed." },
+          { "term": "Loading State", "definition": "UI shown while waiting for data (spinners, skeletons)." },
+          { "term": "Error State", "definition": "UI shown when the network request fails." }
+        ]
+      },
+      "steps": [
+        {
+          "step": 1,
+          "title": "Basic Data Fetching",
+          "duration": "~30 min",
+          "description": "Fetch data inside useEffect.",
+          "code": {
+            "filename": "src/components/UserList.jsx",
+            "language": "jsx",
+            "content": "import { useState, useEffect } from 'react'\n\nfunction UserList() {\n  const [users, setUsers] = useState([])\n  const [loading, setLoading] = useState(true)\n  const [error, setError] = useState(null)\n\n  useEffect(() => {\n    const fetchData = async () => {\n      try {\n        const res = await fetch('https://jsonplaceholder.typicode.com/users')\n        if (!res.ok) throw new Error('Failed to fetch')\n        const data = await res.json()\n        setUsers(data)\n      } catch (err) {\n        setError(err.message)\n      } finally {\n        setLoading(false)\n      }\n    }\n\n    fetchData()\n  }, [])\n\n  if (loading) return <div>Loading...</div>\n  if (error) return <div>Error: {error}</div>\n\n  return (\n    <ul>\n      {users.map(user => <li key={user.id}>{user.name}</li>)}\n    </ul>\n  )\n}"
+          }
+        },
+        {
+          "step": 2,
+          "title": "Create useFetch Hook",
+          "duration": "~45 min",
+          "description": "Abstract the boilerplate into a hook.",
+          "aiPrompt": {
+            "tool": "Cursor",
+            "prompt": "Create a generic 'useFetch' hook that takes a URL. It should return { data, loading, error }. Handle component unmounting using AbortController to cancel pending requests."
+          }
+        },
+        {
+          "step": 3,
+          "title": "Integrate into Dashboard",
+          "duration": "~60 min",
+          "description": "Use your hook to fetch real data for the Weather Widget or a Crypto ticker.",
+          "info": { "title": "Public APIs", "content": "Use 'https://api.open-meteo.com' for weather or 'https://api.coincap.io' for crypto data. No API key needed." }
+        }
+      ],
+      "resources": [
+        { "title": "TanStack Query", "url": "https://tanstack.com/query/latest", "description": "The industry standard for async state (advanced)", "icon": "📡" }
       ],
       "deliverable": {
         "title": "Today's Deliverable",
-        "description": "Weather widget updated with real API data, plus a new widget fetching from a public API."
+        "description": "Weather widget updated with real API data, handling loading states and errors gracefully."
       }
     },
     "12": {
@@ -772,9 +1072,47 @@
         "Use animation variants",
         "Build animated components"
       ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Installation & First Animation",
+          "duration": "~20 min",
+          "description": "Framer Motion uses a 'motion' component to replace standard HTML tags.",
+          "commands": { "shared": "npm install framer-motion" },
+          "code": {
+            "filename": "src/components/AnimatedBox.jsx",
+            "language": "jsx",
+            "content": "import { motion } from 'framer-motion'\n\nfunction AnimatedBox() {\n  return (\n    <motion.div\n      initial={{ opacity: 0, scale: 0.5 }}\n      animate={{ opacity: 1, scale: 1 }}\n      transition={{ duration: 0.5 }}\n      className=\"w-32 h-32 bg-blue-500 rounded\"\n    />\n  )\n}"
+          }
+        },
+        {
+          "step": 2,
+          "title": "Using Variants",
+          "duration": "~30 min",
+          "description": "Variants let you define animation states externally, keeping code clean.",
+          "code": {
+            "filename": "src/components/Menu.jsx",
+            "language": "jsx",
+            "content": "const listVariants = {\n  hidden: { opacity: 0 },\n  visible: { \n    opacity: 1,\n    transition: { staggerChildren: 0.1 }\n  }\n}\n\nconst itemVariants = {\n  hidden: { x: -20, opacity: 0 },\n  visible: { x: 0, opacity: 1 }\n}\n\nfunction Menu() {\n  return (\n    <motion.ul\n      variants={listVariants}\n      initial=\"hidden\"\n      animate=\"visible\"\n    >\n      {[1, 2, 3].map(i => (\n        <motion.li key={i} variants={itemVariants}>\n          Item {i}\n        </motion.li>\n      ))}\n    </motion.ul>\n  )\n}"
+          }
+        },
+        {
+          "step": 3,
+          "title": "Keyframes and Repeating",
+          "duration": "~30 min",
+          "description": "Create complex looping animations.",
+          "aiPrompt": {
+            "tool": "Cursor",
+            "prompt": "Create a 'Loader' component using framer-motion that spins 360 degrees infinitely and pulses in size."
+          }
+        }
+      ],
+      "resources": [
+        { "title": "Framer Motion Docs", "url": "https://www.framer.com/motion/", "description": "Official documentation", "icon": "🎬" }
+      ],
       "deliverable": {
         "title": "Today's Deliverable",
-        "description": "Dashboard widgets with smooth enter/exit animations and micro-interactions."
+        "description": "Dashboard widgets with smooth enter/exit animations and micro-interactions on hover."
       }
     },
     "13": {
@@ -791,9 +1129,45 @@
         "Use AnimatePresence for list animations",
         "Create page transitions"
       ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "AnimatePresence",
+          "duration": "~30 min",
+          "description": "React removes elements instantly. AnimatePresence lets them animate OUT before vanishing.",
+          "code": {
+            "filename": "src/components/Toast.jsx",
+            "language": "jsx",
+            "content": "import { motion, AnimatePresence } from 'framer-motion'\n\nfunction Notifications({ messages }) {\n  return (\n    <div className=\"fixed bottom-4 right-4 flex flex-col gap-2\">\n      <AnimatePresence>\n        {messages.map(msg => (\n          <motion.div\n            key={msg.id}\n            initial={{ opacity: 0, x: 50 }}\n            animate={{ opacity: 1, x: 0 }}\n            exit={{ opacity: 0, x: 50 }}\n            className=\"bg-white p-4 rounded shadow\"\n          >\n            {msg.text}\n          </motion.div>\n        ))}\n      </AnimatePresence>\n    </div>\n  )\n}"
+          }
+        },
+        {
+          "step": 2,
+          "title": "Layout Animations",
+          "duration": "~30 min",
+          "description": "Magically animate elements to their new positions when the list order changes.",
+          "info": { "title": "The `layout` prop", "content": "Just add `layout` to a motion component. Framer will automatically calculate the transform needed to smooth the change." },
+          "code": {
+            "filename": "Layout Example",
+            "language": "jsx",
+            "content": "<motion.div layout className=\"bg-white p-4 rounded\">\n  {/* content */}\n</motion.div>"
+          }
+        },
+        {
+          "step": 3,
+          "title": "Drag Gestures",
+          "duration": "~30 min",
+          "description": "Make your dashboard widgets draggable.",
+          "code": {
+            "filename": "DraggableCard.jsx",
+            "language": "jsx",
+            "content": "<motion.div\n  drag\n  dragConstraints={{ left: 0, right: 300, top: 0, bottom: 300 }}\n  whileDrag={{ scale: 1.1, cursor: 'grabbing' }}\n  className=\"bg-white w-32 h-32 shadow-lg rounded\"\n/>"
+          }
+        }
+      ],
       "deliverable": {
         "title": "Today's Deliverable",
-        "description": "Interactive dashboard with drag-to-reorder widgets, smooth page transitions, and scroll animations."
+        "description": "Interactive dashboard with drag-to-reorder widgets, smooth page transitions, and AnimatePresence for notifications."
       }
     },
     "14": {
@@ -810,22 +1184,37 @@
         "Write component documentation",
         "Prepare components for portfolio use"
       ],
-      "project": {
-        "title": "Component Library",
-        "description": "Build a documented component library",
-        "components": [
-          "Button (all variants)",
-          "Input (text, password, textarea)",
-          "Select/Dropdown",
-          "Modal",
-          "Card",
-          "Toast/Notification",
-          "Tabs",
-          "Accordion",
-          "Badge/Tag",
-          "Avatar"
-        ]
-      },
+      "steps": [
+        {
+          "step": 1,
+          "title": "Organize Structure",
+          "duration": "~45 min",
+          "description": "Adopt a scalable folder structure (Barrel pattern).",
+          "commands": {
+            "shared": "mkdir -p src/components/ui"
+          },
+          "fileStructure": {
+            "example": "src/components/\n├── ui/\n│   ├── Button/\n│   │   ├── Button.jsx\n│   │   ├── Button.test.jsx\n│   │   └── index.js\n│   ├── Card/\n│   └── index.js  <-- Barrel file"
+          }
+        },
+        {
+          "step": 2,
+          "title": "Standardize Props",
+          "duration": "~60 min",
+          "description": "Ensure all UI components share common props like 'className' (for overrides) and 'children'.",
+          "aiPrompt": {
+            "tool": "Claude Code",
+            "prompt": "Review my Button, Card, and Input components. Refactor them to accept a 'className' prop that merges with their default Tailwind classes using a utility function (like clsx or tailwind-merge)."
+          }
+        },
+        {
+          "step": 3,
+          "title": "Create a 'Kitchen Sink' Page",
+          "duration": "~60 min",
+          "description": "Build a route called '/design-system' that displays every variation of every component.",
+          "description_long": "This serves as your documentation. Group by component type (Typography, Buttons, Forms)."
+        }
+      ],
       "deliverable": {
         "title": "Today's Deliverable",
         "description": "A complete component library with documentation, ready to use in portfolio project."
@@ -845,9 +1234,48 @@
         "Implement camera controls",
         "Add basic lighting"
       ],
+      "concepts": {
+        "title": "The Scene Graph",
+        "content": "Three.js is like a movie set.",
+        "keyPoints": [
+          { "term": "Scene", "definition": "The world/container." },
+          { "term": "Camera", "definition": "The point of view (Perspective vs Orthographic)." },
+          { "term": "Renderer", "definition": "Draws the scene to the <canvas> element." },
+          { "term": "Mesh", "definition": "An object made of Geometry (shape) + Material (skin)." }
+        ]
+      },
+      "steps": [
+        {
+          "step": 1,
+          "title": "Basic Setup (Vanilla approach)",
+          "duration": "~45 min",
+          "description": "We'll write standard Three.js code inside a React useEffect to understand the core API first.",
+          "code": {
+            "filename": "src/components/ThreeScene.jsx",
+            "language": "jsx",
+            "content": "import { useEffect, useRef } from 'react'\nimport * as THREE from 'three'\n\nfunction ThreeScene() {\n  const containerRef = useRef()\n\n  useEffect(() => {\n    // 1. Scene\n    const scene = new THREE.Scene()\n    \n    // 2. Camera\n    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)\n    camera.position.z = 5\n\n    // 3. Renderer\n    const renderer = new THREE.WebGLRenderer()\n    renderer.setSize(window.innerWidth, window.innerHeight)\n    containerRef.current.appendChild(renderer.domElement)\n\n    // 4. Cube\n    const geometry = new THREE.BoxGeometry()\n    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })\n    const cube = new THREE.Mesh(geometry, material)\n    scene.add(cube)\n\n    // 5. Animation Loop\n    function animate() {\n      requestAnimationFrame(animate)\n      cube.rotation.x += 0.01\n      cube.rotation.y += 0.01\n      renderer.render(scene, camera)\n    }\n    animate()\n\n    // Cleanup\n    return () => containerRef.current.removeChild(renderer.domElement)\n  }, [])\n\n  return <div ref={containerRef} />\n}"
+          }
+        },
+        {
+          "step": 2,
+          "title": "Orbit Controls",
+          "duration": "~30 min",
+          "description": "Allow the user to rotate the camera around the object.",
+          "info": { "title": "Addon Required", "content": "OrbitControls is not in the core Three build. Import from 'three/examples/jsm/controls/OrbitControls'." },
+          "code": {
+            "filename": "Adding Controls",
+            "language": "javascript",
+            "content": "import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'\n// Inside useEffect...\nconst controls = new OrbitControls(camera, renderer.domElement)\ncontrols.enableDamping = true\n\n// Inside animate loop...\ncontrols.update()"
+          }
+        }
+      ],
+      "resources": [
+        { "title": "Three.js Docs", "url": "https://threejs.org/docs/", "description": "The bible of web 3D", "icon": "🧊" },
+        { "title": "Three.js Journey", "url": "https://threejs-journey.com/", "description": "Bruno Simon's legendary course", "icon": "🚗" }
+      ],
       "deliverable": {
         "title": "Today's Deliverable",
-        "description": "A 3D scene with multiple shapes, lighting, and orbit controls."
+        "description": "A 3D scene with a rotating green cube that you can drag to rotate around using OrbitControls."
       }
     },
     "16": {
@@ -864,9 +1292,32 @@
         "Implement shadows",
         "Add environment maps/HDR"
       ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Materials and Lights",
+          "duration": "~45 min",
+          "description": "Switch from BasicMaterial (no light support) to StandardMaterial.",
+          "code": {
+            "filename": "Updating Material",
+            "language": "javascript",
+            "content": "// Requires light to be seen!\nconst material = new THREE.MeshStandardMaterial({ color: 0xff0000 })\n\nconst ambientLight = new THREE.AmbientLight(0xffffff, 0.5)\nscene.add(ambientLight)\n\nconst pointLight = new THREE.PointLight(0xffffff, 1)\npointLight.position.set(5, 5, 5)\nscene.add(pointLight)"
+          }
+        },
+        {
+          "step": 2,
+          "title": "Loading Models",
+          "duration": "~45 min",
+          "description": "Use GLTFLoader to import models from Blender.",
+          "aiPrompt": {
+            "tool": "Cursor",
+            "prompt": "Write the code to load a .glb model using GLTFLoader. Handle the asynchronous loading and add the result to the scene."
+          }
+        }
+      ],
       "deliverable": {
         "title": "Today's Deliverable",
-        "description": "A scene with loaded 3D model, realistic lighting, and shadows."
+        "description": "A scene with loaded 3D model (like a chair or character), realistic standard lighting, and shadows."
       }
     },
     "17": {
@@ -883,9 +1334,46 @@
         "Learn drei helper library",
         "Build interactive 3D React components"
       ],
+      "concepts": {
+        "title": "Declarative 3D",
+        "content": "R3F lets you write 3D scenes as components. No more imperative 'scene.add(mesh)'.",
+        "keyPoints": [
+          { "term": "<Canvas>", "definition": "The Portal into the 3D world. Handles the scene/camera/renderer setup automatically." },
+          { "term": "<mesh>", "definition": "Lower-case = native Three.js element. Upper-case = custom component." },
+          { "term": "useFrame", "definition": "The animation loop hook. Runs 60 times per second." }
+        ]
+      },
+      "steps": [
+        {
+          "step": 1,
+          "title": "Your First R3F Scene",
+          "duration": "~30 min",
+          "description": "Recreate the cube scene using components.",
+          "commands": { "shared": "npm install @react-three/fiber @react-three/drei" },
+          "code": {
+            "filename": "src/components/Scene.jsx",
+            "language": "jsx",
+            "content": "import { Canvas, useFrame } from '@react-three/fiber'\nimport { useRef, useState } from 'react'\n\nfunction Box(props) {\n  const ref = useRef()\n  const [hovered, setHover] = useState(false)\n  \n  useFrame((state, delta) => (ref.current.rotation.x += delta))\n\n  return (\n    <mesh\n      {...props}\n      ref={ref}\n      onPointerOver={() => setHover(true)}\n      onPointerOut={() => setHover(false)}\n    >\n      <boxGeometry args={[1, 1, 1]} />\n      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />\n    </mesh>\n  )\n}\n\nexport default function Scene() {\n  return (\n    <Canvas>\n      <ambientLight intensity={0.5} />\n      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />\n      <pointLight position={[-10, -10, -10]} />\n      <Box position={[-1.2, 0, 0]} />\n      <Box position={[1.2, 0, 0]} />\n    </Canvas>\n  )\n}"
+          }
+        },
+        {
+          "step": 2,
+          "title": "Using Drei Helpers",
+          "duration": "~30 min",
+          "description": "Drei is a collection of useful helpers (Controls, Environment, Shapes).",
+          "code": {
+            "filename": "Adding Environment",
+            "language": "jsx",
+            "content": "import { OrbitControls, Environment } from '@react-three/drei'\n\n// Inside <Canvas>:\n<OrbitControls />\n<Environment preset=\"city\" />"
+          }
+        }
+      ],
+      "resources": [
+        { "title": "R3F Docs", "url": "https://r3f.docs.pmnd.rs/", "description": "React Three Fiber documentation", "icon": "⚛️" }
+      ],
       "deliverable": {
         "title": "Today's Deliverable",
-        "description": "Interactive 3D component that responds to React state changes."
+        "description": "Interactive 3D component with two rotating cubes that change color on hover, built purely with React components."
       }
     },
     "18": {
@@ -902,9 +1390,34 @@
         "Use GSAP with React",
         "Understand easing functions"
       ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Basic Tweens",
+          "duration": "~30 min",
+          "description": "Move things from A to B.",
+          "commands": { "shared": "npm install gsap @gsap/react" },
+          "code": {
+            "filename": "GSAPBasic.jsx",
+            "language": "jsx",
+            "content": "import { useGSAP } from '@gsap/react'\nimport gsap from 'gsap'\nimport { useRef } from 'react'\n\nfunction Box() {\n  const boxRef = useRef()\n\n  useGSAP(() => {\n    gsap.to(boxRef.current, { \n      x: 200, \n      rotation: 360, \n      duration: 2, \n      ease: \"power2.out\" \n    })\n  })\n\n  return <div ref={boxRef} className=\"w-20 h-20 bg-green-500\" />\n}"
+          }
+        },
+        {
+          "step": 2,
+          "title": "Timelines",
+          "duration": "~45 min",
+          "description": "Chain multiple animations together.",
+          "code": {
+            "filename": "TimelineExample.jsx",
+            "language": "javascript",
+            "content": "useGSAP(() => {\n  const tl = gsap.timeline()\n  \n  tl.to('.box1', { x: 100, duration: 1 })\n    .to('.box2', { x: 100, duration: 1 }, \"-=0.5\") // Overlap by 0.5s\n    .to('.box3', { rotation: 180 })\n})"
+          }
+        }
+      ],
       "deliverable": {
         "title": "Today's Deliverable",
-        "description": "Landing page section with GSAP-powered entrance animations."
+        "description": "Landing page hero section where elements fade in and slide into place in a choreographed sequence using GSAP Timeline."
       }
     },
     "19": {
@@ -921,9 +1434,33 @@
         "Build scroll-based progress indicators",
         "Pin elements during scroll"
       ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Setup ScrollTrigger",
+          "duration": "~20 min",
+          "description": "Register the plugin.",
+          "code": {
+            "filename": "RegisterPlugin.js",
+            "language": "javascript",
+            "content": "import gsap from 'gsap'\nimport { ScrollTrigger } from 'gsap/ScrollTrigger'\n\ngsap.registerPlugin(ScrollTrigger)"
+          }
+        },
+        {
+          "step": 2,
+          "title": "Scrub Animations",
+          "duration": "~45 min",
+          "description": "Link animation progress directly to scrollbar position.",
+          "code": {
+            "filename": "ScrollAni.jsx",
+            "language": "javascript",
+            "content": "useGSAP(() => {\n  gsap.to(ref.current, {\n    x: 500,\n    scrollTrigger: {\n      trigger: ref.current,\n      start: \"top center\", // when top of element hits center of viewport\n      end: \"bottom top\",\n      scrub: 1, // Smooth scrubbing (1s lag)\n      markers: true // Dev tools helper\n    }\n  })\n})"
+          }
+        }
+      ],
       "deliverable": {
         "title": "Today's Deliverable",
-        "description": "A scroll-driven storytelling page with multiple triggered animations."
+        "description": "A scroll-driven storytelling page with multiple triggered animations and pinned sections."
       }
     },
     "20": {
@@ -940,9 +1477,22 @@
         "Build immersive scroll experiences",
         "Optimize performance for complex scenes"
       ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Connecting DOM Scroll to R3F",
+          "duration": "~45 min",
+          "description": "Use the ScrollControls helper from Drei.",
+          "code": {
+            "filename": "ScrollScene.jsx",
+            "language": "jsx",
+            "content": "import { ScrollControls, Scroll, useScroll } from '@react-three/drei'\n\nfunction Model() {\n  const scroll = useScroll()\n  useFrame((state) => {\n    // scroll.offset is between 0 and 1\n    const offset = scroll.offset\n    state.camera.position.z = 5 - (offset * 10)\n  })\n  return <mesh ... />\n}\n\nexport default function Scene() {\n  return (\n    <Canvas>\n      <ScrollControls pages={3} damping={0.3}>\n        <Model />\n        <Scroll html>\n           <h1>HTML Content Overlay</h1>\n        </Scroll>\n      </ScrollControls>\n    </Canvas>\n  )\n}"
+          }
+        }
+      ],
       "deliverable": {
         "title": "Today's Deliverable",
-        "description": "A portfolio-ready hero section with 3D elements that respond to scroll."
+        "description": "A portfolio-ready hero section where scrolling moves the camera through a 3D scene."
       }
     },
     "21": {
@@ -988,9 +1538,28 @@
         "Choose tech stack and hosting",
         "Set up project structure"
       ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Data Structure",
+          "duration": "~30 min",
+          "description": "Create a JSON file to hold your project data so you can map over it later.",
+          "code": {
+            "filename": "src/data/projects.json",
+            "language": "json",
+            "content": "[\n  {\n    \"id\": \"dashboard\",\n    \"title\": \"Personal Dashboard\",\n    \"description\": \"React dashboard with drag-and-drop widgets\",\n    \"tech\": [\"React\", \"Tailwind\", \"Framer Motion\"],\n    \"image\": \"/images/dashboard.png\",\n    \"repo\": \"https://github.com/user/dashboard\",\n    \"demo\": \"https://dashboard.demo.com\"\n  }\n]"
+          }
+        },
+        {
+          "step": 2,
+          "title": "Wireframing",
+          "duration": "~60 min",
+          "description": "Sketch the layout on paper or Figma. Focus on the Hero, Projects Grid, and About section."
+        }
+      ],
       "deliverable": {
         "title": "Today's Deliverable",
-        "description": "Complete portfolio plan with wireframes, content outline, and project setup."
+        "description": "Complete portfolio plan with wireframes, content outline, and 'projects.json' data file."
       }
     },
     "23": {
@@ -1007,9 +1576,22 @@
         "Create responsive hero layout",
         "Optimize hero performance"
       ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Layout Construction",
+          "duration": "~60 min",
+          "description": "Build the semantic HTML/React structure. Use a 100vh container.",
+          "code": {
+            "filename": "Hero.jsx",
+            "language": "jsx",
+            "content": "<section className=\"h-screen w-full relative flex items-center justify-center overflow-hidden\">\n  <div className=\"z-10 text-center\">\n    <h1 className=\"text-6xl font-bold\">Design Engineer</h1>\n    <p className=\"text-xl mt-4\">Building digital experiences</p>\n  </div>\n  <div className=\"absolute inset-0 z-0\">\n    {/* 3D Canvas goes here */}\n    <Scene />\n  </div>\n</section>"
+          }
+        }
+      ],
       "deliverable": {
         "title": "Today's Deliverable",
-        "description": "Fully animated hero section with 3D elements and smooth scroll transitions."
+        "description": "Fully animated hero section with 3D elements background and smooth scroll transitions."
       }
     },
     "24": {
@@ -1026,9 +1608,22 @@
         "Add case study layouts",
         "Create smooth transitions between views"
       ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Grid Component",
+          "duration": "~45 min",
+          "description": "Map over your projects.json data.",
+          "code": {
+            "filename": "ProjectGrid.jsx",
+            "language": "jsx",
+            "content": "<div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-8\">\n  {projects.map(project => (\n    <ProjectCard key={project.id} data={project} />\n  ))}\n</div>"
+          }
+        }
+      ],
       "deliverable": {
         "title": "Today's Deliverable",
-        "description": "Projects section with grid view, filtering, and detailed case study pages."
+        "description": "Projects section with responsive grid view, filtering by tech stack, and hover effects."
       }
     },
     "25": {
@@ -1044,6 +1639,19 @@
         "Design contact form",
         "Implement form submission",
         "Add social proof elements"
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Contact Form",
+          "duration": "~45 min",
+          "description": "Use a service like Web3Forms or EmailJS to handle submissions without a backend.",
+          "code": {
+            "filename": "Contact.jsx",
+            "language": "jsx",
+            "content": "<form action=\"https://api.web3forms.com/submit\" method=\"POST\">\n  <input type=\"hidden\" name=\"access_key\" value=\"YOUR_KEY_HERE\" />\n  <input type=\"text\" name=\"name\" required placeholder=\"Name\" />\n  <input type=\"email\" name=\"email\" required placeholder=\"Email\" />\n  <textarea name=\"message\" required placeholder=\"Message\"></textarea>\n  <button type=\"submit\">Send</button>\n</form>"
+          }
+        }
       ],
       "deliverable": {
         "title": "Today's Deliverable",
@@ -1064,6 +1672,25 @@
         "Add loading states",
         "Polish animations and transitions"
       ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Lazy Loading",
+          "duration": "~30 min",
+          "description": "Split code to reduce initial bundle size.",
+          "code": {
+            "filename": "App.jsx",
+            "language": "jsx",
+            "content": "import { lazy, Suspense } from 'react'\n\nconst ThreeScene = lazy(() => import('./components/ThreeScene'))\n\nfunction App() {\n  return (\n    <Suspense fallback={<div>Loading 3D...</div>}>\n      <ThreeScene />\n    </Suspense>\n  )\n}"
+          }
+        },
+        {
+          "step": 2,
+          "title": "Lighthouse Audit",
+          "duration": "~30 min",
+          "description": "Run Chrome DevTools Lighthouse audit and fix accessibility/performance issues."
+        }
+      ],
       "deliverable": {
         "title": "Today's Deliverable",
         "description": "Portfolio passing Core Web Vitals with 90+ Lighthouse score."
@@ -1082,6 +1709,19 @@
         "Set up custom domain",
         "Implement SEO best practices",
         "Add analytics"
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "Meta Tags",
+          "duration": "~30 min",
+          "description": "Add OpenGraph tags for social sharing.",
+          "code": {
+            "filename": "index.html",
+            "language": "html",
+            "content": "<title>Jane Doe | Design Engineer</title>\n<meta name=\"description\" content=\"Portfolio of Jane Doe...\" />\n<meta property=\"og:image\" content=\"https://mysite.com/og-image.jpg\" />"
+          }
+        }
       ],
       "deliverable": {
         "title": "Today's Deliverable",
@@ -1125,43 +1765,6 @@
         "title": "Today's Deliverable",
         "description": "Portfolio launched and shared publicly. 28-day journey complete! 🎉"
       }
-    }
-  },
-  "tracks": {
-    "vibe-coding": {
-      "name": "Vibe Coding",
-      "color": "#22d3ee",
-      "description": "AI-assisted development tools and workflows"
-    },
-    "react": {
-      "name": "React",
-      "color": "#60a5fa",
-      "description": "React fundamentals and advanced patterns"
-    },
-    "three-js": {
-      "name": "Three.js",
-      "color": "#a78bfa",
-      "description": "3D graphics and animations"
-    },
-    "design-systems": {
-      "name": "Design Systems",
-      "color": "#fb923c",
-      "description": "Component libraries and documentation"
-    },
-    "portfolio": {
-      "name": "Portfolio",
-      "color": "#4ade80",
-      "description": "Portfolio building and deployment"
-    }
-  },
-  "shortcuts": {
-    "modKey": {
-      "windows": "Ctrl",
-      "mac": "Cmd"
-    },
-    "optKey": {
-      "windows": "Alt",
-      "mac": "Option"
     }
   }
 }
