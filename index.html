@@ -818,7 +818,6 @@
 <body class="os-windows">
   <button class="menu-btn" onclick="toggleSidebar()">☰</button>
 
-  <!-- Top Navigation -->
   <nav class="topnav">
     <div class="topnav-brand">
       Design Engineering <span>Learning Path</span>
@@ -843,7 +842,6 @@
   </nav>
 
   <div class="app">
-    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
       <div class="nav-section">
         <div class="nav-section-title">Get Started</div>
@@ -895,7 +893,6 @@
       </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="main">
       <div class="content" id="content"></div>
     </main>
@@ -1146,266 +1143,6 @@ function renderDayFromJSON(day) {
     </section>`
         : ''
     }
-  `;
-}
-
-  if (!day) {
-    return `
-      <section class="section">
-        <div class="section-header">
-          <h2 class="section-title">Content coming soon</h2>
-        </div>
-        <p class="hero-description">This day is defined in navigation but missing from the curriculum JSON.</p>
-      </section>
-    `;
-  }
-
-  const track = day.track || 'vibe-coding';
-  const trackColor = {
-    'vibe-coding': 'var(--cyan)',
-    'react': 'var(--purple)',
-    'three-js': 'var(--green)',
-    'design-systems': 'var(--orange)',
-    'portfolio': 'var(--green)'
-  }[track] || 'var(--cyan)';
-
-  const objectives = day.objectives || [];
-  const deliverableText =
-    (day.deliverable && (day.deliverable.description || day.deliverable.title)) ||
-    'Complete today’s exercises.';
-
-  const resources = day.resources || [];
-
-  return `
-    <div class="hero" style="min-height: 180px;">
-      <div class="hero-texture"></div>
-      <div class="hero-content">
-        <div class="hero-badge" style="border-color:${trackColor}">
-          Day ${day.day || ''} · Week ${day.week || ''}
-        </div>
-        <h1 class="hero-title">${day.title || 'Untitled Day'}</h1>
-        <p class="hero-description">${day.description || ''}</p>
-      </div>
-    </div>
-
-    <section class="section">
-      <div class="section-header">
-        <h2 class="section-title">Objectives</h2>
-      </div>
-      <ul class="objectives-list">
-        ${objectives
-          .map(
-            (o) =>
-              `<li class="objective-item"><span class="objective-bullet">•</span> ${o}</li>`
-          )
-          .join('')}
-      </ul>
-    </section>
-
-    <section class="section">
-      <div class="deliverable">
-        <div class="deliverable-header">
-          <span class="deliverable-icon">🎯</span>
-          <span class="deliverable-title">Today’s Deliverable</span>
-        </div>
-        <div class="deliverable-text">${deliverableText}</div>
-      </div>
-    </section>
-
-    ${
-      resources.length
-        ? `
-    <section class="section">
-      <div class="section-header">
-        <h2 class="section-title">Resources</h2>
-      </div>
-      <div class="resources-grid">
-        ${resources
-          .map(
-            (r) => `
-          <a class="resource-link" href="${r.url}" target="_blank">
-            <span class="resource-icon">📚</span>
-            <div class="resource-info">
-              <div class="resource-title">${r.title}</div>
-              <div class="resource-desc">${r.description || ''}</div>
-            </div>
-            <span class="resource-arrow">→</span>
-          </a>`
-          )
-          .join('')}
-      </div>
-    </section>`
-        : ''
-    }
-  `;
-
-// Small auth-less anon ID generator
-function getAnonId() {
-  let id = localStorage.getItem('vibe_anon_id');
-  if (!id) {
-    id = crypto.randomUUID();
-    localStorage.setItem('vibe_anon_id', id);
-  }
-  return id;
-}
-
-let courseData = null;
-
-async function ensureCourseData() {
-  if (courseData) return courseData;
-  const res = await fetch('/design-engineering-curriculum.json');
-  courseData = await res.json();
-  return courseData;
-}
-
-// Replacement for loadDay function with:
-async function loadDay(d) {
-  currentDay = d;
-  renderNav();
-
-  const anonId = getAnonId();
-
-  // 1. Get course data once, reuse it
-  const data = await ensureCourseData();
-  const dayData = data.days[d];
-
-
-  // 2. Read progress (or create a new row)
-  const { data: rows } = await supabaseClient
-    .from('user_progress')
-    .select('*')
-    .eq('anon_id', anonId)
-    .limit(1);
-
-  const row = rows?.[0];
-
-  if (!row) {
-    await supabaseClient.from('user_progress').insert({
-      anon_id: anonId,
-      current_day: d,
-      days_completed: [d],
-    });
-  } else {
-    const days = row.days_completed || [];
-    if (!days.includes(d)) days.push(d);
-    await supabaseClient
-      .from('user_progress')
-      .update({
-        current_day: d,
-        days_completed: days,
-      })
-      .eq('id', row.id);
-  }
-
-  // 3. Render the day
-  document.getElementById('content').innerHTML = renderDayFromJSON(dayData);
-  window.scrollTo(0, 0);
-}
-
-
-function dayNav(d) {
-  const prev = d > 1 ? `<a class="nav-btn" onclick="loadDay(${d-1})">← Day ${d-1}</a>` : '<span></span>';
-  const next = d < 28 ? `<a class="nav-btn" onclick="loadDay(${d+1})">Day ${d+1} →</a>` : '<span></span>';
-  return `<nav class="day-nav">${prev}${next}</nav>`;
-}
-
-function overviewContent() {
-  return `
-    <div class="hero">
-      <div class="hero-texture"></div>
-      <div class="hero-content">
-        <div class="hero-badge">📚 28-Day Learning Path</div>
-        <h1 class="hero-title">Build with Design Engineering</h1>
-        <p class="hero-description">Master React, Three.js, and modern animation libraries. Build a portfolio that showcases your skills as a design engineer.</p>
-      </div>
-    </div>
-
-    <section class="section">
-      <div class="section-header">
-        <h2 class="section-title">Foundations</h2>
-        <p class="section-subtitle">The building blocks of design engineering.</p>
-      </div>
-      <div class="cards-grid">
-        <div class="card" onclick="loadDay(1)">
-          <div class="card-label">Week 1</div>
-          <div class="card-title">Foundation & Tools</div>
-          <div class="card-description">Set up your development environment with Cursor, Claude Code, and essential tools.</div>
-        </div>
-        <div class="card" onclick="loadDay(8)">
-          <div class="card-label">Week 2</div>
-          <div class="card-title">React & Components</div>
-          <div class="card-description">Deep dive into React patterns, hooks, state management, and Framer Motion.</div>
-        </div>
-        <div class="card" onclick="loadDay(15)">
-          <div class="card-label">Week 3</div>
-          <div class="card-title">Three.js & Animation</div>
-          <div class="card-description">Build immersive 3D experiences with Three.js, React Three Fiber, and GSAP.</div>
-        </div>
-        <div class="card" onclick="loadDay(22)">
-          <div class="card-label">Week 4</div>
-          <div class="card-title">Portfolio Build</div>
-          <div class="card-description">Apply everything to build and deploy a stunning portfolio website.</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-header">
-        <h2 class="section-title">Quick Start</h2>
-        <p class="section-subtitle">Jump into Day 1 to begin your journey.</p>
-      </div>
-      <div class="cards-grid">
-        <div class="card" onclick="loadDay(1)">
-          <div class="card-label">Day 1</div>
-          <div class="card-title">Dev Environment Setup</div>
-          <div class="card-description">Install Node.js, Git, and Cursor IDE. Test AI-assisted coding features.</div>
-        </div>
-        <div class="card" onclick="loadDay(2)">
-          <div class="card-label">Day 2</div>
-          <div class="card-title">Claude Code & AI Tools</div>
-          <div class="card-description">Master Claude Code CLI for complex multi-file coding tasks.</div>
-        </div>
-        <div class="card" onclick="loadDay(3)">
-          <div class="card-label">Day 3</div>
-          <div class="card-title">React Basics</div>
-          <div class="card-description">Create your first React app with Vite. Learn components and state.</div>
-        </div>
-      </div>
-    </section>
-  `;
-}
-
-function placeholderContent(d) {
-  const week = Math.ceil(d / 7);
-  return `
-    <div class="hero" style="min-height: 180px;">
-      <div class="hero-texture"></div>
-      <div class="hero-content">
-        <div class="hero-badge">Day ${d} · Week ${week}</div>
-        <h1 class="hero-title">${dayTitles[d]}</h1>
-      </div>
-    </div>
-
-    <section class="section">
-      <div class="section-header">
-        <h2 class="section-title">Learning Objectives</h2>
-      </div>
-      <ul class="objectives-list">
-        <li class="objective-item"><span class="objective-bullet">→</span> Content coming soon for Day ${d}</li>
-      </ul>
-    </section>
-
-    <div class="callout callout-info">
-      <div class="callout-header">
-        <span class="callout-icon">📝</span>
-        <span class="callout-title">Content In Development</span>
-      </div>
-      <div class="callout-content">
-        <p>Detailed instructions for this day are being prepared.</p>
-      </div>
-    </div>
-
-    ${dayNav(d)}
   `;
 }
 
@@ -2010,6 +1747,182 @@ export default App</pre>
   `;
   }
 };
+
+// Small auth-less anon ID generator
+function getAnonId() {
+  let id = localStorage.getItem('vibe_anon_id');
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem('vibe_anon_id', id);
+  }
+  return id;
+}
+
+let courseData = null;
+
+async function ensureCourseData() {
+  if (courseData) return courseData;
+  const res = await fetch('/design-engineering-curriculum.json');
+  courseData = await res.json();
+  return courseData;
+}
+
+// Replacement for loadDay function with:
+async function loadDay(d) {
+  currentDay = d;
+  renderNav();
+
+  if (d === 0) {
+    document.getElementById('content').innerHTML = overviewContent();
+    window.scrollTo(0, 0);
+    return;
+  }
+
+  const anonId = getAnonId();
+
+  // 1. Get course data once, reuse it
+  const data = await ensureCourseData();
+  const dayData = data.days[d];
+
+
+  // 2. Read progress (or create a new row)
+  const { data: rows } = await supabaseClient
+    .from('user_progress')
+    .select('*')
+    .eq('anon_id', anonId)
+    .limit(1);
+
+  const row = rows?.[0];
+
+  if (!row) {
+    await supabaseClient.from('user_progress').insert({
+      anon_id: anonId,
+      current_day: d,
+      days_completed: [d],
+    });
+  } else {
+    const days = row.days_completed || [];
+    if (!days.includes(d)) days.push(d);
+    await supabaseClient
+      .from('user_progress')
+      .update({
+        current_day: d,
+        days_completed: days,
+      })
+      .eq('id', row.id);
+  }
+
+  // 3. Render the day
+  document.getElementById('content').innerHTML = renderDayFromJSON(dayData);
+  window.scrollTo(0, 0);
+}
+
+
+function dayNav(d) {
+  const prev = d > 1 ? `<a class="nav-btn" onclick="loadDay(${d-1})">← Day ${d-1}</a>` : '<span></span>';
+  const next = d < 28 ? `<a class="nav-btn" onclick="loadDay(${d+1})">Day ${d+1} →</a>` : '<span></span>';
+  return `<nav class="day-nav">${prev}${next}</nav>`;
+}
+
+function overviewContent() {
+  return `
+    <div class="hero">
+      <div class="hero-texture"></div>
+      <div class="hero-content">
+        <div class="hero-badge">📚 28-Day Learning Path</div>
+        <h1 class="hero-title">Build with Design Engineering</h1>
+        <p class="hero-description">Master React, Three.js, and modern animation libraries. Build a portfolio that showcases your skills as a design engineer.</p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Foundations</h2>
+        <p class="section-subtitle">The building blocks of design engineering.</p>
+      </div>
+      <div class="cards-grid">
+        <div class="card" onclick="loadDay(1)">
+          <div class="card-label">Week 1</div>
+          <div class="card-title">Foundation & Tools</div>
+          <div class="card-description">Set up your development environment with Cursor, Claude Code, and essential tools.</div>
+        </div>
+        <div class="card" onclick="loadDay(8)">
+          <div class="card-label">Week 2</div>
+          <div class="card-title">React & Components</div>
+          <div class="card-description">Deep dive into React patterns, hooks, state management, and Framer Motion.</div>
+        </div>
+        <div class="card" onclick="loadDay(15)">
+          <div class="card-label">Week 3</div>
+          <div class="card-title">Three.js & Animation</div>
+          <div class="card-description">Build immersive 3D experiences with Three.js, React Three Fiber, and GSAP.</div>
+        </div>
+        <div class="card" onclick="loadDay(22)">
+          <div class="card-label">Week 4</div>
+          <div class="card-title">Portfolio Build</div>
+          <div class="card-description">Apply everything to build and deploy a stunning portfolio website.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Quick Start</h2>
+        <p class="section-subtitle">Jump into Day 1 to begin your journey.</p>
+      </div>
+      <div class="cards-grid">
+        <div class="card" onclick="loadDay(1)">
+          <div class="card-label">Day 1</div>
+          <div class="card-title">Dev Environment Setup</div>
+          <div class="card-description">Install Node.js, Git, and Cursor IDE. Test AI-assisted coding features.</div>
+        </div>
+        <div class="card" onclick="loadDay(2)">
+          <div class="card-label">Day 2</div>
+          <div class="card-title">Claude Code & AI Tools</div>
+          <div class="card-description">Master Claude Code CLI for complex multi-file coding tasks.</div>
+        </div>
+        <div class="card" onclick="loadDay(3)">
+          <div class="card-label">Day 3</div>
+          <div class="card-title">React Basics</div>
+          <div class="card-description">Create your first React app with Vite. Learn components and state.</div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function placeholderContent(d) {
+  const week = Math.ceil(d / 7);
+  return `
+    <div class="hero" style="min-height: 180px;">
+      <div class="hero-texture"></div>
+      <div class="hero-content">
+        <div class="hero-badge">Day ${d} · Week ${week}</div>
+        <h1 class="hero-title">${dayTitles[d]}</h1>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="section-header">
+        <h2 class="section-title">Learning Objectives</h2>
+      </div>
+      <ul class="objectives-list">
+        <li class="objective-item"><span class="objective-bullet">→</span> Content coming soon for Day ${d}</li>
+      </ul>
+    </section>
+
+    <div class="callout callout-info">
+      <div class="callout-header">
+        <span class="callout-icon">📝</span>
+        <span class="callout-title">Content In Development</span>
+      </div>
+      <div class="callout-content">
+        <p>Detailed instructions for this day are being prepared.</p>
+      </div>
+    </div>
+
+    ${dayNav(d)}
+  `;
+}
 
 // Initialize
 renderNav();
