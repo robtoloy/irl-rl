@@ -630,6 +630,56 @@
           { "term": "Callbacks", "definition": "Functions passed as props for child-to-parent communication" }
         ]
       },
+      "steps": [
+        {
+          "step": 1,
+          "title": "Setup Todo Application",
+          "duration": "~20 min",
+          "description": "Clean up your App.jsx to start fresh for a Todo List application.",
+          "code": {
+            "filename": "src/App.jsx",
+            "language": "jsx",
+            "content": "import { useState } from 'react'\n\nfunction App() {\n  const [todos, setTodos] = useState([\n    { id: 1, text: 'Learn React', completed: true },\n    { id: 2, text: 'Build a Todo App', completed: false },\n    { id: 3, text: 'Master Props', completed: false }\n  ])\n\n  return (\n    <div className=\"p-8 max-w-md mx-auto\">\n      <h1 className=\"text-2xl font-bold mb-4\">My Todo List</h1>\n      {/* List will go here */}\n    </div>\n  )\n}\n\nexport default App"
+          }
+        },
+        {
+          "step": 2,
+          "title": "Render Lists with .map()",
+          "duration": "~30 min",
+          "description": "Learn how to transform an array of data into an array of UI elements.",
+          "info": {
+            "title": " The Key Prop",
+            "content": "When rendering lists, React needs a unique 'key' prop for every element to track updates efficiently. Never use the array index if the list can change order!"
+          },
+          "code": {
+            "filename": "src/App.jsx (updated)",
+            "language": "jsx",
+            "content": "<ul>\n  {todos.map(todo => (\n    <li key={todo.id} className=\"flex items-center gap-2 mb-2\">\n      <span>{todo.text}</span>\n    </li>\n  ))}\n</ul>"
+          }
+        },
+        {
+          "step": 3,
+          "title": "Create a TodoItem Component",
+          "duration": "~30 min",
+          "description": "Extract the list item into a separate component and pass data via Props.",
+          "code": {
+            "filename": "src/components/TodoItem.jsx",
+            "language": "jsx",
+            "content": "function TodoItem({ task, onToggle }) {\n  return (\n    <li className=\"flex items-center gap-2 p-2 border rounded\">\n      <input \n        type=\"checkbox\" \n        checked={task.completed} \n        onChange={() => onToggle(task.id)}\n      />\n      <span \n        style={{ \n          textDecoration: task.completed ? 'line-through' : 'none',\n          color: task.completed ? '#888' : 'inherit'\n        }}\n      >\n        {task.text}\n      </span>\n    </li>\n  )\n}\n\nexport default TodoItem"
+          }
+        },
+        {
+          "step": 4,
+          "title": "Pass Functions as Props",
+          "duration": "~30 min",
+          "description": "Implement the interaction logic in the parent and pass it down to the child.",
+          "code": {
+            "filename": "src/App.jsx",
+            "language": "jsx",
+            "content": "import TodoItem from './components/TodoItem'\n\n// Inside App component:\nconst toggleTodo = (id) => {\n  setTodos(currentTodos => \n    currentTodos.map(todo => \n      todo.id === id ? { ...todo, completed: !todo.completed } : todo\n    )\n  )\n}\n\nreturn (\n  <ul>\n    {todos.map(todo => (\n      <TodoItem \n        key={todo.id} \n        task={todo} \n        onToggle={toggleTodo} \n      />\n    ))}\n  </ul>\n)"
+          }
+        }
+      ],
       "deliverable": {
         "title": "Today's Deliverable",
         "description": "A functional todo list application demonstrating props, conditional rendering, list rendering, and event handling."
@@ -658,6 +708,53 @@
           { "term": "States", "definition": "Variant prefixes like hover:, focus: for interactive states" }
         ]
       },
+      "steps": [
+        {
+          "step": 1,
+          "title": "Install Tailwind CSS",
+          "duration": "~15 min",
+          "description": "Install Tailwind dependencies and generate configuration files.",
+          "commands": {
+            "shared": "npm install -D tailwindcss postcss autoprefixer\nnpx tailwindcss init -p"
+          }
+        },
+        {
+          "step": 2,
+          "title": "Configure Content Paths",
+          "duration": "~10 min",
+          "description": "Tell Tailwind where to look for your class names.",
+          "code": {
+            "filename": "tailwind.config.js",
+            "language": "javascript",
+            "content": "/** @type {import('tailwindcss').Config} */\nexport default {\n  content: [\n    \"./index.html\",\n    \"./src/**/*.{js,ts,jsx,tsx}\",\n  ],\n  theme: {\n    extend: {},\n  },\n  plugins: [],\n}"
+          }
+        },
+        {
+          "step": 3,
+          "title": "Add Tailwind Directives",
+          "duration": "~5 min",
+          "description": "Import Tailwind layers into your main CSS file.",
+          "substeps": {
+            "shared": ["Open src/index.css", "Delete all existing CSS", "Paste the directives below"]
+          },
+          "code": {
+            "filename": "src/index.css",
+            "language": "css",
+            "content": "@tailwind base;\n@tailwind components;\n@tailwind utilities;"
+          }
+        },
+        {
+          "step": 4,
+          "title": "Style Your App",
+          "duration": "~30 min",
+          "description": "Update App.jsx to use Tailwind classes instead of inline styles.",
+          "code": {
+            "filename": "src/App.jsx",
+            "language": "jsx",
+            "content": "export default function App() {\n  return (\n    <div className=\"min-h-screen bg-gray-100 flex items-center justify-center\">\n      <div className=\"bg-white p-8 rounded-xl shadow-lg max-w-sm w-full\">\n        <h1 className=\"text-2xl font-bold text-gray-800 mb-4\">Hello Tailwind</h1>\n        <button className=\"w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition-colors\">\n          Click Me\n        </button>\n      </div>\n    </div>\n  )\n}"
+          }
+        }
+      ],
       "deliverable": {
         "title": "Today's Deliverable",
         "description": "All existing components converted to Tailwind CSS with responsive design, hover states, and consistent spacing."
@@ -676,6 +773,40 @@
         "Create compound components",
         "Implement the children pattern effectively",
         "Build a reusable modal component"
+      ],
+      "steps": [
+        {
+          "step": 1,
+          "title": "The Children Prop",
+          "duration": "~20 min",
+          "description": "Learn how to create wrapper components (like Cards) that accept any content.",
+          "code": {
+            "filename": "src/components/Card.jsx",
+            "language": "jsx",
+            "content": "function Card({ children, title }) {\n  return (\n    <div className=\"bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden\">\n      {title && (\n        <div className=\"px-4 py-3 border-b border-gray-100 bg-gray-50\">\n          <h3 className=\"font-medium text-gray-700\">{title}</h3>\n        </div>\n      )}\n      <div className=\"p-4\">\n        {children}\n      </div>\n    </div>\n  )\n}"
+          }
+        },
+        {
+          "step": 2,
+          "title": "Building a Layout Component",
+          "duration": "~30 min",
+          "description": "Create a shared layout to keep your App.jsx clean.",
+          "code": {
+            "filename": "src/components/Layout.jsx",
+            "language": "jsx",
+            "content": "function Layout({ children }) {\n  return (\n    <div className=\"min-h-screen bg-gray-50\">\n      <nav className=\"bg-white shadow-sm px-6 py-4\">\n        <h1 className=\"font-bold text-xl text-indigo-600\">MyApp</h1>\n      </nav>\n      <main className=\"max-w-4xl mx-auto p-6\">\n        {children}\n      </main>\n    </div>\n  )\n}"
+          }
+        },
+        {
+          "step": 3,
+          "title": "Lifting State Up",
+          "duration": "~40 min",
+          "description": "Refactor two sibling components to share state via their parent.",
+          "aiPrompt": {
+            "tool": "Cursor",
+            "prompt": "Create two components: 'ColorPicker' and 'ColorDisplay'. Lift the 'selectedColor' state to their parent so that changing the picker updates the display."
+          }
+        }
       ],
       "deliverable": {
         "title": "Today's Deliverable",
@@ -696,24 +827,59 @@
         "Implement persistent state with localStorage",
         "Prepare codebase for Week 2"
       ],
-      "project": {
-        "title": "Personal Dashboard",
-        "description": "Build a personal dashboard with multiple widgets",
-        "features": [
-          "Header with navigation and theme toggle",
-          "Quick Notes widget (add, edit, delete notes)",
-          "Todo List widget (enhanced from Day 4)",
-          "Weather Widget (mock data for now)",
-          "Bookmarks widget (save favorite links)"
-        ],
-        "requirements": [
-          "All state persisted to localStorage",
-          "Responsive design (mobile-first)",
-          "Consistent component architecture",
-          "At least 3 compound components",
-          "Tailwind CSS styling throughout"
-        ]
-      },
+      "steps": [
+        {
+          "step": 1,
+          "title": "Project Setup",
+          "duration": "~30 min",
+          "description": "Initialize a clean Vite project with Tailwind CSS for your Personal Dashboard.",
+          "commands": {
+            "shared": "npm create vite@latest personal-dashboard -- --template react\ncd personal-dashboard\nnpm install -D tailwindcss postcss autoprefixer\nnpx tailwindcss init -p"
+          }
+        },
+        {
+          "step": 2,
+          "title": "Build the App Shell",
+          "duration": "~45 min",
+          "description": "Create the main Layout component with a responsive Sidebar and Header.",
+          "aiPrompt": {
+            "tool": "Cursor",
+            "prompt": "Create a responsive Layout component with a fixed sidebar on desktop (hidden on mobile with a hamburger menu) and a top header."
+          }
+        },
+        {
+          "step": 3,
+          "title": "Feature: Todo Widget",
+          "duration": "~60 min",
+          "description": "Port your Todo App from Day 4 into a reusable widget component.",
+          "info": {
+            "title": "Requirement",
+            "content": "Use the Card component from Day 6 as a wrapper. Ensure todos are saved to localStorage."
+          }
+        },
+        {
+          "step": 4,
+          "title": "Feature: Weather Widget",
+          "duration": "~45 min",
+          "description": "Create a widget that displays static weather data (we will connect API in Week 2).",
+          "code": {
+            "filename": "src/components/WeatherWidget.jsx",
+            "language": "jsx",
+            "content": "function WeatherWidget() {\n  return (\n    <Card title=\"Weather\">\n      <div className=\"flex items-center gap-4\">\n        <span className=\"text-4xl\">☀️</span>\n        <div>\n          <p className=\"text-2xl font-bold\">72°F</p>\n          <p className=\"text-gray-500\">Sunny • San Francisco</p>\n        </div>\n      </div>\n    </Card>\n  )\n}"
+          }
+        },
+        {
+          "step": 5,
+          "title": "Grid Layout",
+          "duration": "~30 min",
+          "description": "Arrange your widgets in a responsive CSS Grid.",
+          "code": {
+            "filename": "src/App.jsx",
+            "language": "jsx",
+            "content": "<div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6\">\n  <TodoWidget />\n  <WeatherWidget />\n  <QuickNotesWidget />\n</div>"
+          }
+        }
+      ],
       "deliverable": {
         "title": "Today's Deliverable",
         "description": "A fully functional personal dashboard with 4+ widgets, localStorage persistence, responsive design, and clean component architecture."

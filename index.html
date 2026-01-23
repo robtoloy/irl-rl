@@ -1762,7 +1762,7 @@ let courseData = null;
 
 async function ensureCourseData() {
   if (courseData) return courseData;
-  const res = await fetch('/design-engineering-curriculum.json');
+  const res = await fetch('https://oadjrhljwyujlivjpkza.supabase.co/storage/v1/object/public/content/design-engineering-curriculum.json');
   courseData = await res.json();
   return courseData;
 }
